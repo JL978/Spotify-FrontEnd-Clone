@@ -1,7 +1,7 @@
 :root{
     --spotify-green: #1db954;
     --main-text: #b3b3b3; 
-    --player-height: 94px;
+    --player-height: 92px;
 }
 
 *{
@@ -57,7 +57,9 @@ body{
     background: #040404;
     width: 232px;
     z-index: 3;
-    padding: 24px 0;
+    padding-top: 24px;
+    display: grid;
+    grid-template-rows: auto auto calc(100% - 220px) auto;
 }
 
 .logo{
@@ -136,15 +138,35 @@ body{
     padding-bottom: 18px;
 }
 
+.other-play-wrap{
+    overflow: hidden;
+}
+
 .other-play{
     margin-top: 12px;
+    overflow-y: scroll;
 }
 
 .other-play-list{
     list-style: none;
     font-weight: 500;
     line-height: 32px;
+    
 }
+
+.download-cta{
+    position: sticky;
+    background: #000;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 25px;
+}
+
+.download-cta>h4{
+    margin-left: 12px;
+}
+
 
 .discovery{
     background: #121212;
@@ -153,20 +175,52 @@ body{
 
 .header-nav{
     position: sticky;
-    background: #070707;
+    /* background: #070707; */
     top:0;
     height: 60px;
     width: 100%;
     z-index: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 32px
 }
 
-/* .discovery-content{
-    display: block;
-    height: 300vh;
-    margin: 20px;
-    background: white;
-    z-index: 1;
-} */
+.nav-move{
+    display: flex;
+    width: 83px;
+    justify-content: space-between;
+}
+
+.backward, .forward{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.7);
+    font-size: 20px;
+}
+
+.user-info{
+    width: 32px;
+    height:32px;
+    background: black;
+    border-radius: 50%;
+    position: relative;
+}
+
+.user-profile{
+    background: darkgrey;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    top: calc(calc(32px - 28px)/2);
+    left: calc(calc(32px - 28px)/2);
+    border-radius: 50%;
+}
 
 .player{
     height: var(--player-height);
