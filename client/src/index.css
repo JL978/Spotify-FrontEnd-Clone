@@ -1,0 +1,142 @@
+:root{
+    --spotify-green: #1db954;
+    --main-text: #b3b3b3; 
+    --player-height: 92px;
+}
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-scrollbar {
+    width: 13px;
+    z-index: 0;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    padding: 1px;
+    background: none; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #5a5a5a; 
+    width: 12px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #b3b3b3; 
+}
+
+body{
+    font-size: 13px;
+    line-height: 20px;
+    letter-spacing: .015em;
+    color: var(--main-text);
+    text-transform: none;
+    font-family: 'Rubik', 'Poppins','Nunito','Open Sans','Roboto', 'Helvetica Neue',Helvetica,Arial,'Hiragino Kaku Gothic Pro','Meiryo','MS Gothic',sans-serif
+}
+
+.App{
+    height: 100vh;
+    display: relative;
+    display: grid;
+    grid-template-rows: calc(100vh - var(--player-height)) auto;
+    grid-template-columns: auto 1fr;
+    overflow: hidden;
+}
+
+.sidebar{
+    background: #040404;
+    width: 232px;
+    padding-top: 24px;
+}
+
+
+.logo-link{
+    text-decoration: none;
+    color: white;
+}
+
+.logo{
+    padding-left: 24px;
+    margin-bottom: 18px;
+}
+
+.spotify-logo{
+    width: 131px;
+    height: 40px;
+}
+
+.nav-list{
+    list-style: none;
+}
+
+.NavItem{
+    padding: 0 8px;
+}
+
+.nav-link{
+    color: var(--main-text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 16px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.nav-link:hover{
+    color: white;
+}
+
+.nav-icon{
+    margin-right: 16px;
+}
+
+.playlists{
+    margin-top: 24px;
+}
+
+.play-title{
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    padding: 0 24px 12px 24px
+}
+
+.create-button{
+    border:none;
+    background: transparent;
+    padding: 5px 24px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: var(--main-text);
+}
+
+.create-button > *{
+    display: inline;
+}
+
+
+
+.player{
+    height: var(--player-height);
+    background: #282828;
+    border-top: 1px solid #000;
+    grid-column: 1/-1;
+    position:sticky;
+}
+
+.featured{
+    background: #121212;
+    overflow-y: scroll;
+}
