@@ -2,6 +2,7 @@
     --spotify-green: #1db954;
     --main-text: #b3b3b3; 
     --player-height: 92px;
+    --side-bar-margin: 24px;
 }
 
 *{
@@ -54,6 +55,9 @@ body{
     background: #040404;
     width: 232px;
     padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
 }
 
 
@@ -63,7 +67,7 @@ body{
 }
 
 .logo{
-    padding-left: 24px;
+    padding-left: var(--side-bar-margin);
     margin-bottom: 18px;
 }
 
@@ -97,10 +101,12 @@ body{
 
 .nav-icon{
     margin-right: 16px;
+    height: 24px;
 }
 
 .playlists{
     margin-top: 24px;
+    flex: 1;
 }
 
 .play-title{
@@ -109,24 +115,75 @@ body{
     line-height: 16px;
     letter-spacing: .03em;
     text-transform: uppercase;
-    padding: 0 24px 12px 24px
+    padding: 0 var(--side-bar-margin) 12px var(--side-bar-margin)
 }
 
 .create-button{
     border:none;
     background: transparent;
-    padding: 5px 24px;
+    padding: 5px var(--side-bar-margin);
     display: flex;
     align-items: center;
     width: 100%;
     color: var(--main-text);
+    cursor: pointer;
+    transition: all 0.4s;
 }
 
-.create-button > *{
-    display: inline;
+.create-button:hover{
+    color: white;
+}
+
+.playlist-icon{
+    margin-right: 16px;
+}
+
+.featured-label{
+    font-weight: 700;
+    line-height: 16px;
+}
+
+.featured-item-link{
+    display: flex;
+    align-items: center;
+    padding: 5px var(--side-bar-margin);
+    color: var(--main-text);
+    text-decoration: none;
+    transition: all 0.4s;
 }
 
 
+.featured-item-link:hover{
+    color: #fff;
+}
+
+.list-separator{
+    margin: 8px var(--side-bar-margin) 8px var(--side-bar-margin);
+    background-color: #282828;
+    border: none;
+    height: 1px;
+}
+
+
+
+
+.cta-wrapper{
+    padding: 0 8px;
+    background: #000;
+}
+
+.cta-link{
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    color: var(--main-text);
+    text-decoration: none;
+}
+
+.nav-icon.install-icon{
+    height: 20px;
+}
 
 .player{
     height: var(--player-height);

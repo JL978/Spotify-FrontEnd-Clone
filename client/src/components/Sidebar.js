@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Logo from './Logo.js'
 import NavList from './NavList.js'
 import PlayLists from './PlayLists.js'
+import InstallCTA from './InstallCTA.js'
 
 class Sidebar extends Component {
     render() {
@@ -10,6 +11,7 @@ class Sidebar extends Component {
                 <Logo />
                 <NavList />
                 <PlayLists />
+                <InstallCTA />
             </div>
         );
     }

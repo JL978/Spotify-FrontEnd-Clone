@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 class OtherPlaylist extends Component {
     render() {
         return (
-            <div>
-                
+            <div className="other-playlist-container">
+                <div className="other-list">
+                    
+                </div>
             </div>
         );
     }

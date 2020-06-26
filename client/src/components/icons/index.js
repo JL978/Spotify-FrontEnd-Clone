@@ -3,6 +3,7 @@ import Search from './Search.js'
 import Library from './Library.js'
 import Create from './Create.js'
 import Like from './Like.js'
+import Install from './Install.js'
 
 import React from 'react'
 
@@ -17,6 +18,8 @@ export default function Icon(props) {
         case 'Create':
             return <Create {...props}/>
         case 'Like':
-            return <Like />
+            return <Like {...props}/>
+        case 'Install':
+            return <Install {...props}/>
     }
 }
