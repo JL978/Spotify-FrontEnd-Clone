@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import ListItem from './ListItem.js'
 
+
+//Other playlist component - to be updated with playlists from the spotify api
+//The ListItems in here are just placeholders to test out layouts
 class OtherPlaylist extends Component {
     render() {
         return (

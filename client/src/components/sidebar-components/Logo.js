@@ -1,5 +1,6 @@
 import React from 'react'
 
+//Spotify icon logo with letter in svg format
 export default function Logo() {
     return (
         <a href="#" className="logo-link">

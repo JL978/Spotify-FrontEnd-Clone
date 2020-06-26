@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+//Linked list items
 class ListItem extends Component {
     render() {
         return (

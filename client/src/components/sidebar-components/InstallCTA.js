@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Icon from './icons'
+import Icon from '../icons'
 
 class InstallCTA extends Component {
     render() {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Icon from './icons'
+import Icon from '../icons'
 
+//The list item within the main NavList 
 
 class NavItem extends Component {
     render() {

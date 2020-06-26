@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import NavItem from './NavItem.js'
 
+//The component that is immediately below the spotify logo
+//This is the main nav link list with 3 items - Home, Search and Library
+
 class NavList extends Component {
     render() {
         return (

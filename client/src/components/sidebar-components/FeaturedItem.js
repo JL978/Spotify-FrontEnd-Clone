@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import Icon from './icons'
+import Icon from '../icons'
 
+
+//Could have been the same as a nav item but the styling is a little different so I'll leave it as a separate component
 class FeaturedItem extends Component {
     render() {
         return (
