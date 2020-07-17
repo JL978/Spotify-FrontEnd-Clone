@@ -254,6 +254,13 @@ body{
     padding: 16px 0;
     display: grid;
     grid-auto-flow: column;
-    grid-gap: 16px;
+    grid-gap: 32px;
 }
 
+.CollectionRow{
+    background: white;
+    width: 100%;
+    display:grid;
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fill,minmax(164px,1fr))
+}
