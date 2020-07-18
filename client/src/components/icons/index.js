@@ -4,6 +4,8 @@ import Library from './Library.js'
 import Create from './Create.js'
 import Like from './Like.js'
 import Install from './Install.js'
+import Back from './Back.js'
+import Forward from './Forward.js'
 
 import React from 'react'
 
@@ -21,5 +23,11 @@ export default function Icon(props) {
             return <Like {...props}/>
         case 'Install':
             return <Install {...props}/>
+        case 'Back':
+            return <Back />
+        case 'Forward':
+            return <Forward />
+        default:
+            return null
     }
 }

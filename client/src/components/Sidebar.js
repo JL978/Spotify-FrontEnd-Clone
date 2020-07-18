@@ -12,7 +12,7 @@ class Sidebar extends Component {
                 <Logo />
                 <NavList />
                 <PlayLists />
-                <InstallCTA />
+                {/* <InstallCTA /> */}
             </div>
         );
     }

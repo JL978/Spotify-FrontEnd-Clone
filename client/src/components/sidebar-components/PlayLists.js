@@ -10,7 +10,7 @@ class PlayLists extends Component {
                 <h1 className='play-title'>playlists</h1>
                 <FeaturedPlaylist />
                 <hr className="list-separator"/>
-                <OtherPlaylist />
+                {/* <OtherPlaylist /> */}
             </div>
         );
     }
