@@ -6,19 +6,20 @@ import Like from './Like.js'
 import Install from './Install.js'
 import Back from './Back.js'
 import Forward from './Forward.js'
+import NSearch from './NSearch'
 
 import React from 'react'
 
 export default function Icon(props) {
     switch (props.name) {
         case 'Home':
-            return <Home {...props}/>
+            return <Home />
         case 'Search':
-            return <Search {...props}/>
+            return <Search />
         case 'Library':
-            return <Library {...props}/>
+            return <Library />
         case 'Create':
-            return <Create {...props}/>
+            return <Create />
         case 'Like':
             return <Like {...props}/>
         case 'Install':
@@ -27,6 +28,8 @@ export default function Icon(props) {
             return <Back />
         case 'Forward':
             return <Forward />
+        case 'N-Search':
+            return <NSearch />
         default:
             return null
     }

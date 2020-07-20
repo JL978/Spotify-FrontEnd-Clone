@@ -8,13 +8,7 @@ export default function RowTitle({title}) {
                         letterSpacing: '-0.04em',
                         fontWeight: '700',
                         color:'white'}}>{title}</h1>
-            <a href='/' style={{fontSize: '12px',
-                                textTransform: 'uppercase',
-                                fontWeight:'700',
-                                lineHeight: '16px',
-                                letterSpacing:'.1em',
-                                textDecoration: 'none',
-                                color:'#b3b3b3'}}>see all</a>
+            <a href='/' className='seeAll'>see all</a>
         </div>
     )
 }

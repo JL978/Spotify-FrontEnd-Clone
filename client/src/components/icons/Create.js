@@ -1,7 +1,6 @@
 import React from 'react'
 
 const style = {
-    background:'var(--main-text)',
     padding: '4px',
     width: '32px',
     height: '32px'
@@ -10,7 +9,7 @@ const style = {
 const Create = (props) => {
     return(
         <svg
-        viewBox={props.viewBox}
+        viewBox='0 0 36 36'
         xmlns="http://www.w3.org/2000/svg"
         style={style}
         shape-rendering="crispEdges"

@@ -8,7 +8,7 @@ class CreatePlaylist extends Component {
         return (
             <button className="create-button">
                 <div className="playlist-icon">
-                    <Icon name='Create' viewBox='0 0 36 36'/>
+                    <Icon name='Create' />
                 </div>
                 <span className="featured-label">Create Playlist</span>
             </button>

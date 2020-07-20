@@ -9,7 +9,7 @@ class FeaturedItem extends Component {
             <div className='featured-item'>
                 <a href="#" className='featured-item-link'>
                     <div className="playlist-icon">
-                        <Icon name='Like' width='16px' height='16px' viewBox='0 -28 512 512'/>
+                        <Icon name='Like' />
                     </div>
                     <span className="featured-label">{this.props.label}</span>
                 </a>

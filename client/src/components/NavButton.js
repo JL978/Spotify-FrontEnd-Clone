@@ -3,7 +3,7 @@ import Icon from './icons'
 
 export default function NavButton({property}) {
     return (
-        <button className='navButton'> 
+        <button className={property === 'Back'? 'navButton':'navButton mediaNone'}> 
             <Icon name={property} />
         </button>
     )
