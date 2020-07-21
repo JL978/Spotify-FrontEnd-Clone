@@ -445,6 +445,55 @@ body{
 }
 
 
+.browsePage{
+    color: #fff;
+    margin-top: 16px; 
+    padding: 16px 0;
+}
+
+.browseTitle{
+    margin-bottom: 16px;
+}
+
+.browseGrid{
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(164px, 1fr));
+    grid-auto-rows: auto;
+}
+
+.browseLinkContainer{
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: 8px;
+}
+
+/* .browseLinkContainer::before{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top:0;
+} */
+
+.browseLinkContainer::after{
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+    
+}
+
+.browseLink{
+    position: absolute;
+    width: 100%;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+
 @media (max-width: 1023px){
     .mediaNone{
         display: none;
