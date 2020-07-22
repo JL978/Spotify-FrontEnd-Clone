@@ -19,7 +19,7 @@ export default function SearchBar() {
                         autoCorrect='off' 
                         autoCapitalize='off' 
                         spellCheck='false'
-                        autoFocus='true'
+                        autoFocus={true}
                         placeholder='Search for Artists, Songs, or Podcasts'/>
             </div>
         </div>
