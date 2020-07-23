@@ -8,7 +8,10 @@ export default function CardInfo({title, description}) {
                         lineHeight: '24px',
                         letterSpacing: 'normal',
                         textTransform: 'none',
-                        color:'white'}}>{title}</h2>
+                        textOverflow: 'ellipsis',
+                        overflow:'hidden',
+                        color:'white',
+                        whiteSpace: 'nowrap'}}>{title}</h2>
             <p style={{
                 fontSize: '11px',
                 fontWeight: '400',

@@ -3,28 +3,56 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 
 import CollectionRow from './CollectionRow'
+import sendConfig from '../utilities/axiosUtils'
+
+
 
 export default function HomePage() {
     const [collections, setCollections] = useState([])
+    const [temp, setTemp] = useState({})
+    const [playlistsMap, setplaylistMap] = useState({})
 
+    
     useEffect(() => {
-        const config = {
-            headers: {'Access-Control-Allow-Origin': '*'},
-            'Content-Type': 'application/x-www-form-urlencoded',
-        };
-
-        axios.get('http://localhost:4000/collections', config)
+        const [source, config] = sendConfig()
+        axios.get('http://localhost:4000/collections?limit=6', config)
             .then((response) => {
                 setCollections(response.data.categories.items)
             })
             .catch((error) => console.log(error))
+        
+        return () => source.cancel()
     }, [])
+
+    useEffect(() => {
+        const [source, config] = sendConfig()
+        collections.map((collection) => {
+            console.log(playlistsMap)
+            const {name, id} = collection
+            axios.get(`http://localhost:4000/collection/${id}/playlists?limit=10`, config)
+                .then((response) => {
+                    const playlists = response.data.playlists.items
+                    console.log(playlistsMap)
+                    setTemp({[name]: {id, playlists}})
+                })
+        })
+        return () => source.cancel()
+    }, [collections])
+
+    useEffect(() => {
+        setplaylistMap({...playlistsMap, ...temp})
+    }, [temp])
 
     return (
         <div className='HomePage'>
-            {collections.map((collection, index) => {
-                return <CollectionRow />
-            })}
+            <CollectionRow name='Uniquely Yours' id={null} playlists={[{id:'', description:'', name:'Liked Songs', images:[{url: 'https://misc.scdn.co/liked-songs/liked-songs-300.png'}]}]}/>
+            {   
+                Object.entries(playlistsMap).map(([name, info]) => {
+                    console.log(name)
+                    const {id, playlists} = info
+                    return <CollectionRow name={name} key={id} id={id} playlists={playlists}/>
+                })
+            }
         </div>
     )
 }

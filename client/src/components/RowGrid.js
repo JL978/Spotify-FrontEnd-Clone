@@ -1,12 +1,12 @@
 import React from 'react'
 import PlayCard from './PlayCard'
 
-export default function RowGrid() {
+export default function RowGrid({playlists}) {
     return (
         <div className="RowGrid">
-            <PlayCard />
-            <PlayCard />
-            <PlayCard />
+            {playlists.map((playlist) => {
+                return <PlayCard key={playlist.id} info={playlist}/> 
+            })}
         </div>
     )
 }

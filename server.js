@@ -44,7 +44,8 @@ const authed_header = (token) => ({
 app.get('/collections', (req, res) => {
     client_auth()
         .then((token) => {
-            axios.get('https://api.spotify.com/v1/browse/categories?limit=6', authed_header(token))
+            const limit = req.query.limit
+            axios.get(`https://api.spotify.com/v1/browse/categories?limit=${limit}`, authed_header(token))
                 .then((response) => {
                     res.status(200).send(response.data)
                 })
@@ -55,9 +56,10 @@ app.get('/collections', (req, res) => {
 
 app.get('/collection/:id/playlists', (req, res) =>{
     const id = req.params.id
+    const limit = req.query.limit
     client_auth()
         .then((token) => {
-            axios.get(`https://api.spotify.com/v1/browse/categories/${id}/playlists`, authed_header(token))
+            axios.get(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=${limit}`, authed_header(token))
                 .then((response) => {
                     res.status(200).send(response.data)
                 })

@@ -1,9 +1,10 @@
 import React from 'react'
 
-export default function CardDisplay() {
+export default function CardDisplay({url}) {
     return (
         <div className="CardDisplay">
-            <img src='https://misc.scdn.co/liked-songs/liked-songs-300.png' loading='lazy' className='previewImg'></img>
+            <img src={url} loading='lazy' className='previewImg'></img>
         </div>
     )
 }
+
