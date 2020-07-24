@@ -1,15 +1,20 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Headerbar from './Headerbar'
 import PageContent from './PageContent'
-class Featured extends Component {
-    render() {
-        return (
-            <div className='featured'>
-                <Headerbar />
-                <PageContent />
-            </div>
-        );
+
+function Featured (){
+    const [query, setQuery] = useState('')
+
+    const resetQuery = ()=>{
+        setQuery('')
     }
+
+    return (
+        <div className='featured'>
+            <Headerbar query={query} setQuery={setQuery} resetQuery={resetQuery}/>
+            <PageContent query={query}/>
+        </div>
+    );
 }
 
 export default Featured;

@@ -54,6 +54,19 @@ app.get('/collections', (req, res) => {
         .catch((error) => res.send(error))
 })
 
+app.get('/collection/:id', (req,res) => {
+    const id = req.params.id
+    client_auth()
+        .then((token) => {
+            axios.get(`https://api.spotify.com/v1/browse/categories/${id}`, authed_header(token))
+            .then((response) => {
+                res.status(200).send(response.data)
+            })
+            .catch((error) => console.log(error))
+        })
+        .catch((error) => {res.send(error)})
+})
+
 app.get('/collection/:id/playlists', (req, res) =>{
     const id = req.params.id
     const limit = req.query.limit
@@ -67,5 +80,8 @@ app.get('/collection/:id/playlists', (req, res) =>{
         })
         .catch((error) => res.send(error))
 })
+
+
+
 
 server.listen(PORT, ()=>console.log(`Listening on port ${PORT}`))

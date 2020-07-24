@@ -1,5 +1,6 @@
 import React from 'react'
 import BrowseCard from './BrowseCard'
+import PageTitle from './PageTitle'
 import {useState, useEffect} from 'react'
 
 import axios from 'axios'
@@ -22,15 +23,7 @@ export default function BrowsePage() {
 
     return (
         <div className='page-content browsePage'>
-            <div className="browseTitle">
-                <h1 style={{
-                    fontSize: '24px',
-                    fontSeight: '700',
-                    lineHeight: '28px',
-                    letterSpacing: '-.04em',
-                    textTransform: 'none',
-                }}>Browse All</h1>
-            </div>
+            <PageTitle name='Browse All' />
             <div className="browseGrid">
                 {genre.map((genre) => {
                     return <BrowseCard key={genre.id} info={genre}/>
