@@ -23,7 +23,7 @@ export default function PlayCard({info, type}) {
     return (
         <Link to={`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)'}}>
             <div className="PlayCard">
-                <CardDisplay url={image_url}/>
+                <CardDisplay url={image_url} type={type}/>
                 <CardInfo title={name} description={description}/>
             </div>
         </Link>
