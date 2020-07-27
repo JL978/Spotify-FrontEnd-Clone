@@ -81,7 +81,23 @@ app.get('/collection/:id/playlists', (req, res) =>{
         .catch((error) => res.send(error))
 })
 
-
+app.get('/search', (req, res) => {
+    const query = req.query.q
+    const limit = req.query.limit
+    const type = req.query.type
+    
+    client_auth()
+        .then((token) => {
+            axios.get(`https://api.spotify.com/v1/search?query=${query}&limit=${limit}&type=${type}`, authed_header(token))
+                .then((response) => {
+                    res.status(200).send(response.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        })
+        .catch(error => console.log(error))
+}) 
 
 
 server.listen(PORT, ()=>console.log(`Listening on port ${PORT}`))

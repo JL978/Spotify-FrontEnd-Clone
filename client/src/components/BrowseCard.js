@@ -1,5 +1,4 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
 
 export default function BrowseCard({info}) {
     const {icons, name, id} = info

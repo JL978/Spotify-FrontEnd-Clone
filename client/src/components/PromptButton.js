@@ -32,10 +32,10 @@ const ctaStyle ={
     padding: '8px 48px'
 }
 
-export default function PromptButton({name, style}) {
+export default function PromptButton({name, styleName}) {
     
 
     return (
-        <button className="PromptButton" name={name} style={switchStyle(style)}>{name}</button>
+        <button className="PromptButton" name={name} style={switchStyle(styleName)}>{name}</button>
     )
 }

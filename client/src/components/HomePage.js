@@ -6,7 +6,6 @@ import CollectionRow from './CollectionRow'
 import sendConfig from '../utilities/axiosUtils'
 
 
-
 export default function HomePage() {
     const [collections, setCollections] = useState([])
     const [temp, setTemp] = useState({})
@@ -27,7 +26,6 @@ export default function HomePage() {
     useEffect(() => {
         const [source, config] = sendConfig()
         collections.map((collection) => {
-            console.log(playlistsMap)
             const {name, id} = collection
             axios.get(`http://localhost:4000/collection/${id}/playlists?limit=9`, config)
                 .then((response) => {
@@ -44,7 +42,7 @@ export default function HomePage() {
     }, [temp])
 
     return (
-        <div className='HomePage'>
+        <div className='pageContent'>
             <CollectionRow name='Uniquely Yours' id={null} playlists={[{id:'', description:'', name:'Liked Songs', images:[{url: 'https://misc.scdn.co/liked-songs/liked-songs-300.png'}]}]}/>
             {   
                 Object.entries(playlistsMap).map(([name, info]) => {

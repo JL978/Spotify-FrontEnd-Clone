@@ -7,7 +7,7 @@ class FeaturedItem extends Component {
     render() {
         return (
             <div className='featured-item'>
-                <a href="#" className='featured-item-link'>
+                <a href="/" className='featured-item-link'>
                     <div className="playlist-icon">
                         <Icon name='Like' />
                     </div>

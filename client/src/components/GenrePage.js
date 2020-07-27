@@ -24,7 +24,7 @@ export default function GenrePage() {
         }else{
             setId('')
         }
-    }, [])
+    }, [location])
 
 
     useEffect(() => {

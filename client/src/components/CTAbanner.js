@@ -20,7 +20,7 @@ export default function CTAbanner() {
                     textTransform: 'none'
                 }}>Sign up to get unlimited songs and podcasts with occasional ads. No credit card needed.</h3>
             </div>
-            <PromptButton name='Sign up free' style='CTA'/>
+            <PromptButton name='Sign up free' styleName='CTA'/>
         </div>
     )
 }
