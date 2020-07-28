@@ -7,6 +7,9 @@ import Install from './Install.js'
 import Back from './Back.js'
 import Forward from './Forward.js'
 import NSearch from './NSearch'
+import Heart from './Heart'
+import Play from './Play'
+import Music from './Music'
 
 import React from 'react'
 
@@ -20,6 +23,8 @@ export default function Icon(props) {
             return <Library />
         case 'Create':
             return <Create />
+        case 'Heart':
+            return <Heart />
         case 'Like':
             return <Like {...props}/>
         case 'Install':
@@ -30,6 +35,10 @@ export default function Icon(props) {
             return <Forward />
         case 'N-Search':
             return <NSearch />
+        case 'Play':
+            return <Play {...props}/>
+        case 'Music':
+            return <Music />
         default:
             return null
     }

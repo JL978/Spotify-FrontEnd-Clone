@@ -21,7 +21,7 @@ export default function PlayCard({info, type}) {
     }
     
     return (
-        <Link to={`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)'}}>
+        <Link to={type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)'}}>
             <div className="PlayCard">
                 <CardDisplay url={image_url} type={type}/>
                 <CardInfo title={name} description={description}/>

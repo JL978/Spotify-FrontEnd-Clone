@@ -99,5 +99,22 @@ app.get('/search', (req, res) => {
         .catch(error => console.log(error))
 }) 
 
+app.get('/playlist/:id', (req, res) => {
+    const id = req.params.id
+    
+    client_auth()
+        .then((token) => {
+            axios.get(`https://api.spotify.com/v1/playlists/${id}`, authed_header(token))
+                .then((response) => {
+                    res.status(200).send(response.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        })
+        .catch(error => console.log(error))
+}) 
+
+
 
 server.listen(PORT, ()=>console.log(`Listening on port ${PORT}`))

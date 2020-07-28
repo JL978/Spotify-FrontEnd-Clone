@@ -42,14 +42,16 @@ export default function HomePage() {
     }, [temp])
 
     return (
-        <div className='pageContent'>
-            <CollectionRow name='Uniquely Yours' id={null} playlists={[{id:'', description:'', name:'Liked Songs', images:[{url: 'https://misc.scdn.co/liked-songs/liked-songs-300.png'}]}]}/>
-            {   
-                Object.entries(playlistsMap).map(([name, info]) => {
-                    const {id, playlists} = info
-                    return <CollectionRow name={name} key={id} id={id} playlists={playlists}/>
-                })
-            }
+        <div className="page-content">
+            <div className='pageContent'>
+                <CollectionRow name='Uniquely Yours' id={null} playlists={[{id:'', description:'', name:'Liked Songs', images:[{url: 'https://misc.scdn.co/liked-songs/liked-songs-300.png'}]}]}/>
+                {   
+                    Object.entries(playlistsMap).map(([name, info]) => {
+                        const {id, playlists} = info
+                        return <CollectionRow name={name} key={id} id={id} playlists={playlists}/>
+                    })
+                }
+            </div>
         </div>
     )
 }

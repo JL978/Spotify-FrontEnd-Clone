@@ -22,12 +22,14 @@ export default function BrowsePage() {
     }, [])
 
     return (
-        <div className='page-content browsePage'>
-            <PageTitle name='Browse All' />
-            <div className="browseGrid">
-                {genre.map((genre) => {
-                    return <BrowseCard key={genre.id} info={genre}/>
-                })}
+        <div className="page-content">
+            <div className='browsePage'>
+                <PageTitle name='Browse All' />
+                <div className="browseGrid">
+                    {genre.map((genre) => {
+                        return <BrowseCard key={genre.id} info={genre}/>
+                    })}
+                </div>
             </div>
         </div>
     )

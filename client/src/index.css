@@ -259,7 +259,7 @@ body{
 .header-bar{
     width: 100%;
     height: 60px;
-    background: #070707;
+    background: rgba(0,0,0,0.5);
     position: sticky;
     top:0;
     z-index: 2;
@@ -488,6 +488,258 @@ body{
 .GenrePage{
     padding-top: 16px
 }
+
+.playListPage{
+    margin-top: -60px;
+    padding-bottom: 32px;
+}
+
+.banner{
+    max-height: 500px;
+    min-height: 340px;
+    height: 30vh;
+    color: #fff;
+    position: relative;
+    padding: 0 32px 24px;
+    display: flex;
+    overflow: hidden;
+    align-items: flex-end;
+}
+
+.bannerOverlay{
+    background: linear-gradient(transparent,rgba(0,0,0,.5));
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+}
+
+
+.bannerImgDiv{
+    margin-right: 24px;
+    width: 192px;
+    display:flex;
+    align-items: flex-end;
+    z-index: 1;
+    min-width: 192px;
+}
+
+.bannerImg{
+    width: 100%;
+    min-width: 192px;
+    box-shadow: 0 4px 60px rgba(0,0,0,.5);
+    object-fit: cover;
+    object-position: center center;
+}
+
+.bannerInfo{
+    z-index: 1;
+    display: flex;
+    flex-flow: column;
+}
+
+.pageTitle{
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.bannerTitle{
+    padding: 0.08em 0px;
+    font-size: 48px;
+    line-height: 48px;
+    font-weight: 900;
+    letter-spacing: -.04em;
+}
+
+.bannerDescription{
+    color: hsla(0,0%,100%,.7);
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 400;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+}
+
+
+.additionalInfo{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.additionalInfo > a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.additionalInfo > a:hover{
+    text-decoration: underline;
+}
+
+.additionalInfo > h2{
+    color: hsla(0,0%,100%,.7);
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.additionalInfo :not(a)::before{
+    content: "•";
+    margin: 0 4px;
+}
+
+
+.playListContent{
+    position: relative;
+}
+
+.playListOverlay{
+    height: 232px;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+    background-image: linear-gradient(rgba(0,0,0,.6),#121212);
+}
+
+
+.playListFunctions{
+    display: flex;
+    position: relative;
+    padding: 24px 32px;
+    width: 100%;
+    align-items: center;
+    z-index: 1;
+}
+
+
+.playButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: var(--spotify-green);
+    color: #fff;
+    border: 0;
+    border-radius: 50%;
+    margin-right: 32px; 
+}
+
+.playButton:hover{
+    transform: scale(1.05);
+}
+
+.likeButton{
+    width: 32px;
+    height: 32px;
+    margin-right: 24px;
+    background: transparent;
+    border: 0;
+    color: hsla(0,0%,100%,.7);
+}
+
+.likeButton:hover{
+    color: #fff
+}
+
+.moreButton{
+    width: 32px;
+    height: 20px;
+    background: transparent;
+    border: 0;
+    color: hsla(0,0%,100%,.7);
+    font-size: 16px;
+}
+
+.moreButton:hover{
+    color:#fff;
+}
+
+
+.moreButton:focus, .likeButton:focus, .playButton:focus{
+    outline: none;
+}
+
+.trackListContainer{
+    position: relative;
+}
+
+.trackList{
+    width: 100%;
+    margin-bottom: 1.5em;
+}
+
+.trackListItem{
+    height: 4.56em; 
+    position: relative;
+    transition: background-color 0.2s linear;
+    list-style-type: none;
+    user-select: none;
+    display: flex;
+}
+
+
+.trackListItem:hover{
+    background-color: hsla(0,0%,100%,.1);
+}
+
+
+.trackItemPlay{
+    box-sizing: border-box;
+    position: relative;
+    text-align: right;
+    padding-right: 1em;
+    width: 42px;
+}
+
+.itemIcon{
+    margin-top: .75em;
+    color: #fff;
+    opacity: 0.6;
+}
+
+.hoverIcon{
+    display: none;
+    margin-top: .75em;
+    color: #fff;
+    z-index: 3;
+}
+
+.trackListItem:hover .itemIcon{
+    display:none;
+}
+
+.trackListItem:hover .hoverIcon{
+    display: block;
+}
+
+@media (min-width: 1024px){
+    .bannerTitle{
+        font-size: 72px;
+        line-height: 72px;
+    }
+}
+
+@media (min-width: 1280px){
+    .bannerImgDiv{
+        width: 232px;
+        height: 232px;
+    }
+
+    .bannerTitle{
+        font-size: 96px;
+        line-height: 96px;
+    }
+}
+
 
 
 @media (max-width: 1023px){
