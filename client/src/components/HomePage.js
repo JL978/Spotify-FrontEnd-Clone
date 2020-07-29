@@ -30,7 +30,7 @@ export default function HomePage() {
             axios.get(`http://localhost:4000/collection/${id}/playlists?limit=9`, config)
                 .then((response) => {
                     const playlists = response.data.playlists.items
-                    setTemp({[name]: {id, playlists}})
+                    setTemp(temp => ({[name]: {id, playlists}}))
                 })
                 .catch((error) => console.log(error))
         })
@@ -38,7 +38,7 @@ export default function HomePage() {
     }, [collections])
 
     useEffect(() => {
-        setplaylistMap({...playlistsMap, ...temp})
+        setplaylistMap(playlistsMap => ({...playlistsMap, ...temp}))
     }, [temp])
 
     return (

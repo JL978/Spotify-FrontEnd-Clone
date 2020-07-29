@@ -116,5 +116,23 @@ app.get('/playlist/:id', (req, res) => {
 }) 
 
 
+app.get('/playlist/:id/tracks', (req, res) => {
+    const id = req.params.id
+    const offset = req.query.offset
+    const limit = req.query.limit
+
+    client_auth()
+        .then((token) => {
+            axios.get(`https://api.spotify.com/v1/playlists/${id}/tracks?offset=${offset}&limit=${limit}`, authed_header(token))
+                .then((response) => {
+                    res.status(200).send(response.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        })
+        .catch(error => console.log(error))
+}) 
+
 
 server.listen(PORT, ()=>console.log(`Listening on port ${PORT}`))

@@ -48,11 +48,11 @@ export default function GenrePage() {
     }, [id])
 
     return (
-        <div className='GenrePage'>
+        <div className='GenrePage page-content'>
             <PageTitle name={name}/>
             <div className="browseGrid">
                 {playLists.map(playlist => (
-                    <PlayCard key={playlist.id} info={playlist}/>
+                    <PlayCard key={playlist.id} info={playlist} type="playlist"/>
                 ))}
             </div>
         </div>
