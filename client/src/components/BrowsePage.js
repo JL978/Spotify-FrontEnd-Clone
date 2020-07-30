@@ -1,20 +1,19 @@
 import React from 'react'
+import {useState, useEffect} from 'react'
+import makeAxiosRequest from '../utilities/makeAxiosRequest'
+
 import BrowseCard from './BrowseCard'
 import PageTitle from './PageTitle'
-import {useState, useEffect} from 'react'
-
-import axios from 'axios'
-import sendConfig from '../utilities/axiosUtils'
 
 export default function BrowsePage() {
     const [genre, setGenre] = useState([])
 
     useEffect(() => {
-        const [source, config] = sendConfig()
+        const [source, makeRequest] = makeAxiosRequest('https://api.spotify.com/v1/browse/categories?limit=50')
 
-        axios.get('http://localhost:4000/collections?limit=50', config)
-            .then((response) => {
-                setGenre(response.data.categories.items)
+        makeRequest()
+            .then((data) => {
+                setGenre(data.categories.items)
             })
             .catch((error) => console.log(error))
         

@@ -1,9 +1,11 @@
 import React from 'react'
+import {Switch, Route} from 'react-router-dom'
+
 import HomePage from './HomePage'
 import SearchPage from './SearchPage'
 import GenrePage from './GenrePage'
 import PlayListPage from './PlayListPage'
-import {Switch, Route} from 'react-router-dom'
+import AlbumPage from './AlbumPage'
 
 export default function PageContent({query}) {
     return (
@@ -19,6 +21,9 @@ export default function PageContent({query}) {
             </Route>
             <Route path='/playlist'>
                 <PlayListPage />
+            </Route>
+            <Route path='/album'>
+                <AlbumPage />
             </Route>
         </Switch>
     )

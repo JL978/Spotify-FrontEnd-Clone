@@ -1,18 +1,22 @@
 import React from 'react'
 import TrackListItem from './TrackListItem'
 
-export default function TrackList({tracks, lastRef}) {
+const TrackList = React.forwardRef(({tracks}, ref) => {
     return (
         <div className="trackListContainer">
             <ol className="trackList">
-                {tracks.items.map((track, index) => {
-                    // if (index+1 < tracks.items.length){
+                {tracks.map((track, index) => {
+                    console.log(tracks)
+                    if (index+1 < tracks.length){
                         return <TrackListItem track={track.track} key={track.track.id}/>
-                    // }else{
-                    //     return <TrackListItem lastRef={lastRef} track={track.track} key={track.track.id}/>
-                    // }
+                    }else{
+                        return <TrackListItem ref={ref} track={track.track} key={track.track.id}/>
+                    }
                 })}
             </ol>
         </div>
     )
-}
+})
+
+
+export default TrackList

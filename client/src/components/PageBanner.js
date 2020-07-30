@@ -1,10 +1,10 @@
 import React from 'react'
 
 export default function PageBanner({pageTitle, bannerInfo}) {
-    const {name, description, user, followers, primary_color, images} = bannerInfo
+    const {name, description, user, followers, primary_color, images,release_date} = bannerInfo
     let formattedLikes
     let imgUrl 
-    if (images.length > 0){
+    if (images && images.length > 0){
         imgUrl = images[0].url
     }
 
@@ -19,9 +19,9 @@ export default function PageBanner({pageTitle, bannerInfo}) {
             <div className="bannerInfo">
                 <h2 className="pageTitle">{pageTitle}</h2>
                 <h1 className="bannerTitle">{name}</h1>
-                <p className="bannerDescription">{description}</p>
+                <p className="bannerDescription" style={{display: description===''? 'none':'flex'}}>{description}</p>
                 <div className="additionalInfo">
-                    <a href={`/user/${user.id}`}>{user.display_name}</a>
+                    <a href={`/user/${user&&user.id}`}>{user&&user.display_name}</a>
                     <h2>{formattedLikes} likes</h2>
                 </div>
             </div>

@@ -1,11 +1,10 @@
 import React from 'react'
-import PageTitle from './PageTitle'
-import PlayCard from './PlayCard'
-
 import {useEffect, useState} from 'react'
 import { useLocation } from 'react-router-dom'
-import axios from 'axios'
-import sendConfig from '../utilities/axiosUtils'
+import makeAxiosRequest from '../utilities/makeAxiosRequest'
+
+import PageTitle from './PageTitle'
+import PlayCard from './PlayCard'
 
 export default function GenrePage() {
     const [playLists, setPlayLists] = useState([])
@@ -28,22 +27,22 @@ export default function GenrePage() {
 
 
     useEffect(() => {
-        const [source, config] = sendConfig()
+        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}`)
 
-        axios.get(`http://localhost:4000/collection/${id}`, config)
-            .then((response) => {
-                const name = response.data.name
-                setName(name)
-            })
-            .catch((error) => console.log(error))
-
-        axios.get(`http://localhost:4000/collection/${id}/playlists?limit=50`, config)
-            .then((response) => {
-                const playlists = response.data.playlists.items
-                setPlayLists(playlists)
-            })
+        makeRequest()
+            .then((data) => setName(data.name))
             .catch((error) => console.log(error))
         
+        return () => source.cancel()
+    }, [id])
+
+    useEffect(() => {
+        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=50`)
+
+        makeRequest()
+            .then((data) => setPlayLists(data.playlists.items))
+            .catch((error) => console.log(error))
+
         return () => source.cancel()
     }, [id])
 

@@ -1,10 +1,8 @@
 import React from 'react'
-import axios from 'axios'
 import {useState, useEffect} from 'react'
+import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
 import CollectionRow from './CollectionRow'
-
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
 export default function HomePage() {
     const [collections, setCollections] = useState([])
@@ -24,7 +22,7 @@ export default function HomePage() {
     useEffect(() => {
         collections.map((collection) => {
             const {name, id} = collection
-            var [source, makeRequest] = makeAxiosRequest(`http://localhost:4000/collection/${id}/playlists?limit=9`)
+            var [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=9`)
             makeRequest()
                 .then((data) => {
                     const playlists = data.playlists.items

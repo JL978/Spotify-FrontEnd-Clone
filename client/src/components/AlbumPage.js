@@ -7,18 +7,19 @@ import PageBanner from './PageBanner'
 import PlayListFunctions from './PlayListFunctions'
 import TrackList from './TrackList'
 
-
-export default function PlayListPage() {
+export default function AlbumPage() {
     const [id, setId] = useState('')
     const location = useLocation()
 
     const [bannerInfo, setbannerInfo] = useState({
+        album_type: '',
         name: '',
         description: '',
         user: {},
         followers: 0,
         primary_color: '#262626',
         images: [],
+        release_date: ''
     })
 
     const [tracks, setTracks] = useState([])
@@ -49,7 +50,7 @@ export default function PlayListPage() {
         if (path.length === 3){
             setId(path[path.length-1])
         }else if (path.length > 3){
-            const idIndex = path.findIndex('playlist') + 1
+            const idIndex = path.findIndex('album') + 1
             setId(path[idIndex])
         }else{
             setId('')
@@ -58,12 +59,12 @@ export default function PlayListPage() {
 
     //using the id to get the playlist's info
     useEffect(() => {
-        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/playlists/${id}`)
+        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/albums/${id}`)
 
         makeRequest()
             .then((data) => {
-                const {name, description, owner, followers, primary_color, tracks, images} = data
-                setbannerInfo(bannerInfo => ({...bannerInfo, name, description, user:owner, followers, primary_color, images}))
+                const {album_type, name, artists, primary_color, tracks, images, release_date} = data
+                setbannerInfo(bannerInfo => ({...bannerInfo, album_type, name, user:artists, primary_color, images, release_date}))
                 setTracks(tracks.items)
                 setNext(tracks.next)
             })
@@ -74,7 +75,7 @@ export default function PlayListPage() {
 
     return (
         <div className='listPage' style={{display: `${tracks.length===0? 'none':'block'}`}}>
-            <PageBanner pageTitle='playlist' bannerInfo={bannerInfo}/>
+            <PageBanner pageTitle={bannerInfo.album_type} bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
                 <PlayListFunctions />

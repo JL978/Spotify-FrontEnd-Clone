@@ -2,12 +2,13 @@ import React from 'react'
 import Icon from './icons'
 import msTimeFormat from '../utilities/utils'
 
-export default function TrackListItem({track, lastRef}) {
+
+const TrackListItem = React.forwardRef(({track}, ref)  => {
     const {album, artists, name, explicit, duration_ms} = track
 
     const formattedTime = msTimeFormat(duration_ms)
     return (
-        <li className="trackListItem">
+        <li ref={ref} className="trackListItem">
         
             <div className="trackItemPlay">
                 <div className="hoverIcon trackTopAlign">
@@ -47,4 +48,7 @@ export default function TrackListItem({track, lastRef}) {
 
         </li>
     )
-}
+})
+
+
+export default TrackListItem

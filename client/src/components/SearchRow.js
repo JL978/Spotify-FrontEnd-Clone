@@ -1,10 +1,9 @@
 import React from 'react'
+import {useEffect, useState} from 'react'
+import makeAxiosRequest from '../utilities/makeAxiosRequest'
+
 import SearchRowTitle from './SearchRowTitle'
 import SearchRowGrid from './SearchRowGrid'
-import {useEffect, useState} from 'react'
-
-import sendConfig from '../utilities/axiosUtils'
-import axios from 'axios'
 
 export default function SearchRow({title, type, query}) {
     const [result, setResult] = useState([])
@@ -17,16 +16,15 @@ export default function SearchRow({title, type, query}) {
 
 
     useEffect(() => {
-        const [source, config] = sendConfig()
-        axios.get(`http://localhost:4000/search?q=${formatedQuery}&limit=9&type=${type}`, config)
-            .then((response) => {
-                const data = response.data
+        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/search?q=${formatedQuery}&type=${type}&limit=9`)
+        makeRequest()
+            .then((data) => {
                 const key = Object.keys(data)[0]
                 const result = data[key].items
                 setResult(result)
             })
             .catch((error) => {
-                if (axios.isCancel(error)) return
+                console.log(error)
             })
         
         return () => source.cancel()
@@ -34,7 +32,7 @@ export default function SearchRow({title, type, query}) {
 
 
     return (
-        <div className='CollectionRow'>
+        <div className='CollectionRow' style={{display: `${result.length===0? 'none':'grid'}`}}>
             <SearchRowTitle title={title}/>
             <SearchRowGrid type={type} info={result}/>
         </div>
