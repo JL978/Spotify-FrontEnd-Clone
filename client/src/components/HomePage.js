@@ -3,8 +3,8 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 
 import CollectionRow from './CollectionRow'
-import sendConfig from '../utilities/axiosUtils'
 
+import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
 export default function HomePage() {
     const [collections, setCollections] = useState([])
@@ -13,29 +13,27 @@ export default function HomePage() {
 
     
     useEffect(() => {
-        const [source, config] = sendConfig()
-        axios.get('http://localhost:4000/collections?limit=6', config)
-            .then((response) => {
-                setCollections(response.data.categories.items)
-            })
+        const [source, makeRequest] = makeAxiosRequest('https://api.spotify.com/v1/browse/categories?limit=6')
+        makeRequest()
+            .then((data) => setCollections(data.categories.items))
             .catch((error) => console.log(error))
         
         return () => source.cancel()
     }, [])
 
     useEffect(() => {
-        const [source, config] = sendConfig()
         collections.map((collection) => {
             const {name, id} = collection
-            axios.get(`http://localhost:4000/collection/${id}/playlists?limit=9`, config)
-                .then((response) => {
-                    const playlists = response.data.playlists.items
+            var [source, makeRequest] = makeAxiosRequest(`http://localhost:4000/collection/${id}/playlists?limit=9`)
+            makeRequest()
+                .then((data) => {
+                    const playlists = data.playlists.items
                     setTemp(temp => ({[name]: {id, playlists}}))
                 })
                 .catch((error) => console.log(error))
         })
-        return () => source.cancel()
     }, [collections])
+
 
     useEffect(() => {
         setplaylistMap(playlistsMap => ({...playlistsMap, ...temp}))
