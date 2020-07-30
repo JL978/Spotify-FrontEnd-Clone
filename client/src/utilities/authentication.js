@@ -5,11 +5,12 @@ const axios = require('axios')
 const qs = require('querystring')
 
 const client_auth = ()=>{
+    console.log(client_id)
     return new Promise((res, rej) =>{
         const config = {
             headers: {
                 'Content-Type':'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
             }
         }
     
