@@ -15,7 +15,7 @@ export default function AlbumPage() {
         album_type: '',
         name: '',
         description: '',
-        user: {},
+        user: [],
         followers: 0,
         primary_color: '#262626',
         images: [],

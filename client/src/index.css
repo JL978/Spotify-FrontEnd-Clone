@@ -591,10 +591,12 @@ body{
     font-weight: 500;
 }
 
-.additionalInfo :not(a)::before{
+.additionalInfo :not(:first-child)::before{
     content: "•";
     margin: 0 4px;
+    display: inline-block;
 }
+
 
 
 .playListContent{
@@ -782,7 +784,8 @@ body{
 }
 
 .trackArtists > a:not(:last-child)::after{
-    content: ', '
+    content: ',\00a0';
+    display: inline-block;
 }
 
 .trackInfoSep{
@@ -839,8 +842,6 @@ body{
         line-height: 96px;
     }
 }
-
-
 
 @media (max-width: 1023px){
     .mediaNone{

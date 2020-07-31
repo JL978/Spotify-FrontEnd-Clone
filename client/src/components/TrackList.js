@@ -6,11 +6,10 @@ const TrackList = React.forwardRef(({tracks}, ref) => {
         <div className="trackListContainer">
             <ol className="trackList">
                 {tracks.map((track, index) => {
-                    console.log(tracks)
                     if (index+1 < tracks.length){
-                        return <TrackListItem track={track.track} key={track.track.id}/>
+                        return <TrackListItem track={track} key={track.id}/>
                     }else{
-                        return <TrackListItem ref={ref} track={track.track} key={track.track.id}/>
+                        return <TrackListItem ref={ref} track={track} key={track.id}/>
                     }
                 })}
             </ol>

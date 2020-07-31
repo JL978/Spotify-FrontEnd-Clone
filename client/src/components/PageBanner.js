@@ -1,7 +1,8 @@
 import React from 'react'
 
 export default function PageBanner({pageTitle, bannerInfo}) {
-    const {name, description, user, followers, primary_color, images,release_date} = bannerInfo
+    const {name, description, user, followers, primary_color, images, release_date} = bannerInfo
+    console.log(user)
     let formattedLikes
     let imgUrl 
     if (images && images.length > 0){
@@ -21,8 +22,15 @@ export default function PageBanner({pageTitle, bannerInfo}) {
                 <h1 className="bannerTitle">{name}</h1>
                 <p className="bannerDescription" style={{display: description===''? 'none':'flex'}}>{description}</p>
                 <div className="additionalInfo">
-                    <a href={`/user/${user&&user.id}`}>{user&&user.display_name}</a>
-                    <h2>{formattedLikes} likes</h2>
+                    {user.map(person => (
+                        <a href={`/${person.type}/${person.id}`} key={person.id}>{person.type === 'artist'? person.name:person.display_name}</a>
+                    ))}
+                    {followers != 0 &&
+                        <h2>{formattedLikes} likes</h2>
+                    }
+                    {release_date && 
+                        <h2>{release_date}</h2>
+                    }
                 </div>
             </div>
             <div className="bannerOverlay"></div>

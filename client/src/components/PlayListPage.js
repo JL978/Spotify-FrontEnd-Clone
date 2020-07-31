@@ -15,7 +15,7 @@ export default function PlayListPage() {
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
         description: '',
-        user: {},
+        user: [],
         followers: 0,
         primary_color: '#262626',
         images: [],
@@ -63,8 +63,8 @@ export default function PlayListPage() {
         makeRequest()
             .then((data) => {
                 const {name, description, owner, followers, primary_color, tracks, images} = data
-                setbannerInfo(bannerInfo => ({...bannerInfo, name, description, user:owner, followers, primary_color, images}))
-                setTracks(tracks.items)
+                setbannerInfo(bannerInfo => ({...bannerInfo, name, description, user:[owner], followers, primary_color, images}))
+                setTracks(tracks.items.map((track) => track.track))
                 setNext(tracks.next)
             })
             .catch((error) => console.log(error))

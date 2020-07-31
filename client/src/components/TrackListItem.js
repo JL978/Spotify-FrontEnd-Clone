@@ -31,10 +31,14 @@ const TrackListItem = React.forwardRef(({track}, ref)  => {
                                 <a href={`/artist/${artist.id}`} key={artist.id}>{artist.name}</a>
                             ))}
                         </span>
-                        <span className='trackInfoSep'>•</span>
-                        <span className="trackAlbum ellipsis-one-line">
-                            <a href={`/ablum/${album.id}`}>{album.name}</a>
-                        </span>
+                        {album && 
+                            <>
+                                <span className='trackInfoSep'>•</span>
+                                <span className="trackAlbum ellipsis-one-line">
+                                    <a href={`/ablum/${album.id}`}>{album.name}</a>
+                                </span>
+                            </>
+                        }
                     </div>
 
                 </div>
