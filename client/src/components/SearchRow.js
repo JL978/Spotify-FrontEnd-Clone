@@ -29,7 +29,7 @@ export default function SearchRow({title, type, query}) {
                 })
         }
         return () => source.cancel()
-    }, [formatedQuery])
+    }, [formatedQuery, type])
 
 
     return (

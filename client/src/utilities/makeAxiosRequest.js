@@ -5,8 +5,14 @@ export default function makeAxiosRequest(endpoint){
     
     const makeRequest = async () => {
         const cancelToken = source.token
+        const config = {
+            method: 'POST',
+            url: 'http://localhost:4000/',
+            data: {endpoint},
+            cancelToken
+        }
         try{
-            var result = await axios.post('http://localhost:4000/', {endpoint})
+            var result = await axios(config)
         }catch (error){
             if (axios.isCancel(error)) return
             return error

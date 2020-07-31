@@ -344,6 +344,7 @@ body{
     transform: scale(1.1);
 }
 
+
 .page-content{
     padding: 0 32px;
     max-width: 1955px;
@@ -548,6 +549,14 @@ body{
 }
 
 .bannerTitle{
+    padding: 0.08em 0px;
+    font-size: 48px;
+    line-height: 48px;
+    font-weight: 900;
+    letter-spacing: -.04em;
+}
+
+.bannerTitleXL{
     padding: 0.08em 0px;
     font-size: 48px;
     line-height: 48px;
@@ -823,6 +832,10 @@ body{
 }
 
 
+.no-outline:focus{
+    outline:none;
+}
+
 
 @media (min-width: 1024px){
     .bannerTitle{
@@ -840,6 +853,13 @@ body{
     .bannerTitle{
         font-size: 96px;
         line-height: 96px;
+    }
+}
+
+@media (min-width: 1710px){
+    .bannerTitleXL{
+        font-size: 72px;
+        line-height: 72px;
     }
 }
 

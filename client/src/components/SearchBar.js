@@ -6,6 +6,7 @@ import {useEffect} from 'react'
 export default function SearchBar({query, setQuery, resetQuery}) {
     useEffect(() => {
         return () => resetQuery()
+        // eslint-disable-next-line
     }, [])
 
     return (

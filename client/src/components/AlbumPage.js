@@ -31,7 +31,7 @@ export default function AlbumPage() {
         if (observer.current) observer.current.disconnect()
         observer.current = new IntersectionObserver(entries => {
             if(entries[0].isIntersecting && next){
-                const [source, makeRequest] = makeAxiosRequest(next)
+                const [, makeRequest] = makeAxiosRequest(next)
                 makeRequest()
                     .then(data => {
                         setTracks(tracks => [...tracks, ...data.items])

@@ -22,13 +22,14 @@ export default function HomePage() {
     useEffect(() => {
         collections.map((collection) => {
             const {name, id} = collection
-            var [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=9`)
+            var [, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=9`)
             makeRequest()
                 .then((data) => {
                     const playlists = data.playlists.items
                     setTemp(temp => ({[name]: {id, playlists}}))
                 })
                 .catch((error) => console.log(error))
+            return null
         })
     }, [collections])
 

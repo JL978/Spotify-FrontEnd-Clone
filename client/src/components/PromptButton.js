@@ -33,9 +33,12 @@ const ctaStyle ={
 }
 
 export default function PromptButton({name, styleName}) {
-    
-
     return (
-        <button className="PromptButton" name={name} style={switchStyle(styleName)}>{name}</button>
+        name === 'Log In'? 
+            <button className="PromptButton no-outline" name={name} style={switchStyle(styleName)}>{name}</button>
+            :
+        <a href='https://spotify.com/signup'>
+            <button className="PromptButton no-outline" name={name} style={switchStyle(styleName)}>{name}</button>
+        </a>
     )
 }
