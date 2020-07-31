@@ -17,22 +17,23 @@ export default function SearchRow({title, type, query}) {
 
     useEffect(() => {
         const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/search?q=${formatedQuery}&type=${type}&limit=9`)
-        makeRequest()
-            .then((data) => {
-                const key = Object.keys(data)[0]
-                const result = data[key].items
-                setResult(result)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-        
+        if (formatedQuery.length > 0){
+            makeRequest()
+                .then((data) => {
+                    const key = Object.keys(data)[0]
+                    const result = data[key].items
+                    setResult(result)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
         return () => source.cancel()
     }, [formatedQuery])
 
 
     return (
-        <div className='CollectionRow' style={{display: `${result.length===0? 'none':'grid'}`}}>
+        <div className='CollectionRow' style={{display: result.length===0? 'none':'grid'}}>
             <SearchRowTitle title={title}/>
             <SearchRowGrid type={type} info={result}/>
         </div>
