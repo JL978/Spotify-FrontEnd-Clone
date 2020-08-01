@@ -6,44 +6,34 @@ import makeAxiosRequest from '../utilities/makeAxiosRequest'
 import PageTitle from './PageTitle'
 import PlayCard from './PlayCard'
 
+import useId from '../utilities/hooks/useId'
+
 export default function GenrePage() {
+    const id = useId()
+    
     const [playLists, setPlayLists] = useState([])
-    const [id, setId] = useState('')
     const [name, setName] = useState('')
 
-    const location = useLocation()
-
     useEffect(() => {
-        const path = location.pathname.split('/')
-        if (path.length === 3){
-            setId(path[path.length-1])
-        }else if (path.length > 3){
-            const idIndex = path.findIndex('genre') + 1
-            setId(path[idIndex])
-        }else{
-            setId('')
+        const [nameSource, requestName] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}`)
+        const [listSource, requestList] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=50`)
+
+        const makeRequest = async () => {
+            try{
+                const [nameData, listData] = await Promise.all([requestName(), requestList()])
+                setName(nameData.name)
+                setPlayLists(listData.playlists.items)
+            }catch(error){
+                console.log(error)
+            }
         }
-    }, [location])
-
-
-    useEffect(() => {
-        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}`)
 
         makeRequest()
-            .then((data) => setName(data.name))
-            .catch((error) => console.log(error))
-        
-        return () => source.cancel()
-    }, [id])
 
-    useEffect(() => {
-        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories/${id}/playlists?limit=50`)
-
-        makeRequest()
-            .then((data) => setPlayLists(data.playlists.items))
-            .catch((error) => console.log(error))
-
-        return () => source.cancel()
+        return () => {
+            nameSource.cancel()
+            listSource.cancel()
+        }
     }, [id])
 
     return (

@@ -7,9 +7,10 @@ import PageBanner from './PageBanner'
 import PlayListFunctions from './PlayListFunctions'
 import TrackList from './TrackList'
 
+import useId from '../utilities/hooks/useId'
+
 export default function AlbumPage() {
-    const [id, setId] = useState('')
-    const location = useLocation()
+    const id = useId()
 
     const [bannerInfo, setbannerInfo] = useState({
         album_type: '',
@@ -42,20 +43,6 @@ export default function AlbumPage() {
         })
         if (node) observer.current.observe(node)
     }, [next])
-
-    //Getting the playlist id from the url
-    useEffect(() => {
-        const path = location.pathname.split('/')
-
-        if (path.length === 3){
-            setId(path[path.length-1])
-        }else if (path.length > 3){
-            const idIndex = path.findIndex('album') + 1
-            setId(path[idIndex])
-        }else{
-            setId('')
-        }
-    }, [location])
 
     //using the id to get the playlist's info
     useEffect(() => {
