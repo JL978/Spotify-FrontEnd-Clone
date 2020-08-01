@@ -10,6 +10,7 @@ import NSearch from './NSearch'
 import Heart from './Heart'
 import Play from './Play'
 import Music from './Music'
+import Music2 from './Music2'
 
 import React from 'react'
 
@@ -39,6 +40,8 @@ export default function Icon(props) {
             return <Play {...props}/>
         case 'Music':
             return <Music />
+        case 'Music2':
+            return <Music2 />
         default:
             return null
     }

@@ -35,7 +35,7 @@ function returnDescription(type, info){
     let artists
     switch (type){
         case 'playlist':
-           return info.description
+           return info.description || `By ${info.owner.display_name}`
         case 'album':
             artists = info.artists.map((object) => object.name)
             return artists.length === 1 ? artists[0]:artists.join(', ')
