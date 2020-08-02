@@ -1,6 +1,5 @@
 import React from 'react'
 import {useEffect, useState, useRef, useCallback} from 'react'
-import { useLocation } from 'react-router-dom'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
 import PageBanner from './PageBanner'

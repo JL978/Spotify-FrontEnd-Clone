@@ -11,7 +11,9 @@ export default function HomePage() {
 
     
     useEffect(() => {
-        const [source, makeRequest] = makeAxiosRequest('https://api.spotify.com/v1/browse/categories?limit=6')
+        const [language, locale] = getLocale()
+        console.log(language, locale)
+        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories?limit=6&country=${locale}&locale=${language}_${locale}`)
         makeRequest()
             .then((data) => setCollections(data.categories.items))
             .catch((error) => console.log(error))
@@ -51,4 +53,10 @@ export default function HomePage() {
             </div>
         </div>
     )
+}
+
+
+function getLocale(){
+    let language = navigator.language
+    return language&&language.length === 2 ? language.split('-'):['en', 'US']
 }

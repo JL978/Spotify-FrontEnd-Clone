@@ -1,6 +1,5 @@
 import React from 'react'
 import {useEffect, useState} from 'react'
-import { useLocation } from 'react-router-dom'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
 import PageTitle from './PageTitle'
@@ -10,7 +9,7 @@ import useId from '../utilities/hooks/useId'
 
 export default function GenrePage() {
     const id = useId()
-    
+
     const [playLists, setPlayLists] = useState([])
     const [name, setName] = useState('')
 
