@@ -3,7 +3,7 @@ import CardInfo from './CardInfo'
 import CardDisplay from './CardDisplay'
 import {Link} from 'react-router-dom'
 
-export default function PlayCard({info, type}) {
+const PlayCard = React.forwardRef(({info, type}, ref) => {
     const description = returnDescription(type, info)
     const {name, id} = info
 
@@ -22,13 +22,13 @@ export default function PlayCard({info, type}) {
     
     return (
         <Link to={type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)'}}>
-            <div className="PlayCard">
+            <div ref={ref} className="PlayCard">
                 <CardDisplay url={image_url} type={type}/>
                 <CardInfo title={name} description={description}/>
             </div>
         </Link>
     )
-}
+})
 
 
 function returnDescription(type, info){
@@ -48,3 +48,6 @@ function returnDescription(type, info){
             return null
     }
 }
+
+
+export default PlayCard

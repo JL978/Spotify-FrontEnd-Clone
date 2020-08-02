@@ -1,6 +1,7 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
+import getLocale from '../utilities/locale'
 
 import CollectionRow from './CollectionRow'
 
@@ -12,7 +13,6 @@ export default function HomePage() {
     
     useEffect(() => {
         const [language, locale] = getLocale()
-        console.log(language, locale)
         const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories?limit=6&country=${locale}&locale=${language}_${locale}`)
         makeRequest()
             .then((data) => setCollections(data.categories.items))
@@ -56,7 +56,3 @@ export default function HomePage() {
 }
 
 
-function getLocale(){
-    let language = navigator.language
-    return language&&language.length === 2 ? language.split('-'):['en', 'US']
-}

@@ -4,9 +4,33 @@ import Icon from './icons'
 export default function PlayListFunctions({type}) {
     return (
         <div className="playListFunctions">
-            {type === 'user'? 
-                <button className="followButton">follow</button>
-                :
+            {switchType(type)}
+            <button className="moreButton" title="More">• • •</button>
+        </div>
+    )
+}
+
+
+function switchType(type){
+    switch (type) {
+        case 'user':
+            return (
+                <>
+                    <button className="followButton">follow</button>
+
+                </>
+            )
+        case 'artist':
+            return (
+                <>
+                    <button className="playButton" title="Play">
+                        <Icon name="Play" height='28' width='28'/>
+                    </button>
+                    <button className="followButton">follow</button>
+                </>
+            )
+        default:
+            return (
                 <>
                     <button className="playButton" title="Play">
                         <Icon name="Play" height='28' width='28'/>
@@ -16,9 +40,6 @@ export default function PlayListFunctions({type}) {
                         <Icon name='Heart'/>
                     </button>
                 </>
-            }
-            
-            <button className="moreButton" title="More">• • •</button>
-        </div>
-    )
+            )
+    }
 }

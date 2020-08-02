@@ -7,6 +7,7 @@ import PlayListFunctions from './PlayListFunctions'
 import CollectionRow from './CollectionRow'
 
 import useId from '../utilities/hooks/useId'
+import useInfiScroll from '../utilities/hooks/useInfiScroll'
 
 export default function PageContent({query}) {
     const id = useId()
@@ -22,6 +23,7 @@ export default function PageContent({query}) {
     })
 
     const [playLists, setplayLists] = useState([])
+    const [setNext, lastRef] = useInfiScroll(setplayLists)
 
     useEffect(() => {
         const [userSource, requestUser] = makeAxiosRequest(`https://api.spotify.com/v1/users/${id}`)
@@ -32,10 +34,11 @@ export default function PageContent({query}) {
                 const [userData, listData] = await Promise.all([requestUser(), requestList()])
 
                 const {display_name, owner, followers, primary_color, images} = userData
-                const {items, total} = listData
-                console.log(listData)
+                const {items, total, next} = listData
+                console.log(next)
                 setbannerInfo(bannerInfo => ({...bannerInfo, name:display_name, user:[owner], followers, primary_color, images, total}))
                 setplayLists(items)
+                setNext(next)
             }catch(error){ 
                 console.log(error)
             }   
@@ -47,28 +50,8 @@ export default function PageContent({query}) {
             userSource.cancel()
             listSource.cancel()
         }
+    // eslint-disable-next-line
     }, [id])
-
-    // const [next, setNext] = useState(null) 
-
-    // const observer = useRef()
-    // const lastTrackRef = useCallback(node => {
-    //     if (observer.current) observer.current.disconnect()
-    //     observer.current = new IntersectionObserver(entries => {
-    //         if(entries[0].isIntersecting && next){
-    //             const [, makeRequest] = makeAxiosRequest(next)
-    //             makeRequest()
-    //                 .then(data => {
-    //                     setPlaylists(tracks => [...tracks, ...data.items])
-    //                     setNext(data.next)
-    //                 })
-    //                 .catch(error => console.log(error))
-    //         }
-    //     })
-    //     if (node) observer.current.observe(node)
-    // }, [next])
-    //setNext(tracks.next)
-
 
     return (
         <div className='listPage' style={{display: playLists.length===0? 'none':'block'}}>
@@ -77,9 +60,12 @@ export default function PageContent({query}) {
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
                 <PlayListFunctions type='user'/>
                 <div className="page-content" style={{marginTop: '40px'}}>
-                    <CollectionRow name='Public Playlists' id={null} playlists={playLists}/>
+                    <CollectionRow ref={lastRef} name='Public Playlists' id={null} playlists={playLists}/>
                 </div>
             </div>
         </div>
     )
 }
+
+
+

@@ -7,6 +7,7 @@ import GenrePage from './GenrePage'
 import PlayListPage from './PlayListPage'
 import AlbumPage from './AlbumPage'
 import UserPage from './UserPage'
+import ArtistPage from './ArtistPage'
 
 export default function PageContent({query}) {
     return (
@@ -28,6 +29,9 @@ export default function PageContent({query}) {
             </Route>
             <Route path='/user'>
                 <UserPage />
+            </Route>
+            <Route path='/artist'>
+                <ArtistPage />
             </Route>
         </Switch>
     )

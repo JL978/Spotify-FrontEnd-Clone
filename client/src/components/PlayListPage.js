@@ -54,8 +54,6 @@ export default function PlayListPage() {
         })
         if (node) observer.current.observe(node)
     }, [next])
-
-
     
     return (
         <div className='listPage' style={{display: `${tracks.length===0? 'none':'block'}`}}>

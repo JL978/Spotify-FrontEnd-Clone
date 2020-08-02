@@ -2,11 +2,14 @@ import React from 'react'
 import RowTitle from './RowTitle'
 import RowGrid from './RowGrid'
 
-export default function CollectionRow({name, playlists, id}) {
+
+ const CollectionRow = React.forwardRef(({name, playlists, id}, ref) => {
     return (
         <div className="CollectionRow">
             <RowTitle title={name} id={id}/>
-            <RowGrid playlists={playlists}/>
+            <RowGrid ref={ref} playlists={playlists}/>
         </div>
     )
-}
+})
+
+export default CollectionRow
