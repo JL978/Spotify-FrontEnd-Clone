@@ -23,6 +23,8 @@ export default function ArtistPage() {
         total: 0
     })
 
+    const [, locale] = getLocale()
+
     const [tracks, setTracks] = useState([])
     const [album, setAlbum] = useState([])
     const [single, setSingle] = useState([])
@@ -31,13 +33,19 @@ export default function ArtistPage() {
     const [related, setRelated] = useState([])
 
     useEffect(() => {
-        const [, locale] = getLocale()
+        setTracks([])
+        setAlbum([])
+        setSingle([])
+        setAppear([])
+        setCompilation([])
+        setRelated([])
+        
         const [artistSource, requestArtist] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}`)
         const [tracksSource, requestTracks] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=${locale}`)
-        const [albumSource, requestAlbum] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=album`)
-        const [singleSource, requestSingle] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=single`)
-        const [appearSource, requestAppear] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=appears_on`)
-        const [compilationSource, requestCompilation] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=compilation`)
+        const [albumSource, requestAlbum] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=album&country=${locale}`)
+        const [singleSource, requestSingle] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=single&country=${locale}`)
+        const [appearSource, requestAppear] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=appears_on&country=${locale}`)
+        const [compilationSource, requestCompilation] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=compilation&country=${locale}`)
         const [relatedSource, requestRelated] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/related-artists`)
 
         const makeRequest = async ()=> {
@@ -52,7 +60,7 @@ export default function ArtistPage() {
 
                 const {name, followers, primary_color, images} = artistData
                 setbannerInfo(bannerInfo => ({...bannerInfo, name, followers, primary_color, images}))
-
+                
                 const tracks = tracksData.tracks.length > 5? tracksData.tracks.slice(0,5) : tracksData.tracks
                 const album = albumData.items
                 const single = singleData.items
@@ -94,7 +102,7 @@ export default function ArtistPage() {
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
                 <PlayListFunctions type='artist'/>
                 <div className="page-content">
-                    <AboutMenu id={id} related = {related} tracks={tracks}/>
+                    <AboutMenu id={id} related = {related} tracks={tracks} album={album} single={single} appear={appear} compilation={compilation}/>
                 </div>
             </div>
         </div>

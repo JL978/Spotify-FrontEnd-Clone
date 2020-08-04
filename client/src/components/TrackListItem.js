@@ -7,12 +7,9 @@ const TrackListItem = React.forwardRef(({track, style}, ref)  => {
     const {album, artists, name, explicit, duration_ms} = track
 
     let thumbNail 
-    if (style === 'simplify'){
-        if (album.images.length > 0){
-            thumbNail = album.images[album.images.length-1].url
-        }
+    if (style === 'simplify' && album.images.length > 0){
+        thumbNail = album.images[album.images.length-1].url
     }
-    console.log(thumbNail)
     const formattedTime = msTimeFormat(duration_ms)
     return (
         <li ref={ref} className="trackListItem">

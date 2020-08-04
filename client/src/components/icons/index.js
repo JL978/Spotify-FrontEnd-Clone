@@ -11,6 +11,8 @@ import Heart from './Heart'
 import Play from './Play'
 import Music from './Music'
 import Music2 from './Music2'
+import CD from './CD'
+
 
 import React from 'react'
 
@@ -42,6 +44,8 @@ export default function Icon(props) {
             return <Music />
         case 'Music2':
             return <Music2 />
+        case 'CD':
+            return <CD />
         default:
             return null
     }
