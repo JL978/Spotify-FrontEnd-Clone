@@ -3,7 +3,7 @@ import Icon from './icons'
 import msTimeFormat from '../utilities/utils'
 
 
-const TrackListItem = React.forwardRef(({track, style}, ref)  => {
+const TrackListItem = React.forwardRef(({track, style, highlight}, ref)  => {
     const {album, artists, name, explicit, duration_ms} = track
 
     let thumbNail 
@@ -12,7 +12,7 @@ const TrackListItem = React.forwardRef(({track, style}, ref)  => {
     }
     const formattedTime = msTimeFormat(duration_ms)
     return (
-        <li ref={ref} className="trackListItem">
+        <li ref={ref} className={`trackListItem ${highlight? 'highlight':null}`}>
         
             <div className="trackItemPlay" style={style === 'simplify' ? simplyStyle:null}>
                 <div className={style === 'simplify'? "hoverIcon":"hoverIcon trackTopAlign"}>

@@ -15,7 +15,7 @@ export default function SearchBar({query, setQuery, resetQuery}) {
                 <div style={iconStyle}>
                     <Icon name="N-Search" /> 
                 </div>
-                <input className= 'SearchInput' 
+                <input className= 'SearchInput no-outline' 
                         maxLength='80' 
                         autoCorrect='off' 
                         autoCapitalize='off' 

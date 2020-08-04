@@ -11,14 +11,14 @@ export default function CTAbanner() {
                     letterSpacing: '.1em',
                     textTransform: 'uppercase',
                     marginBottom: '4px'
-                }}>Preview of spotify</h2>
+                }}>A spotify clone</h2>
                 <h3 style={{
                     fontSize: '16px',
                     fontWeight: '500',
                     lineHeight: '24px',
                     letterSpacing: 'normal',
                     textTransform: 'none'
-                }}>Sign up to get unlimited songs and podcasts with occasional ads. No credit card needed.</h3>
+                }}>This is a clone website intended to be an exercise in web application building. If you are looking for the real app go to open.spotify.com</h3>
             </div>
             <PromptButton name='Sign up free' styleName='CTA'/>
         </div>

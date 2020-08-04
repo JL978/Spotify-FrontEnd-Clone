@@ -316,9 +316,6 @@ body{
     letter-spacing: .015em;
 }
 
-.SearchInput:focus{
-    outline:none
-}
 
 .UserPrompt{
     white-space: nowrap;
@@ -408,8 +405,44 @@ body{
     height: min-content;
     cursor: pointer;
     z-index: 3;
+    position: relative;
 }
 
+.smallButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--spotify-green);
+    color: #fff;
+    border: 0;
+    border-radius: 50%;
+    margin: 0;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 16px;
+    margin-right: 20px;
+    z-index: 3;
+    display:none;
+}
+
+.smallButton:hover{
+    transform: scale(1.06);
+}
+
+.smallButton:active{
+    transform: scale(1);
+}
+
+.pcWrapper{
+    position: relative
+}
+
+.pcWrapper:hover .smallButton{
+    display: flex;
+}
 
 .CardDisplay{
     position: relative;
@@ -683,6 +716,7 @@ body{
     margin-right: 32px; 
 }
 
+
 .playButton:hover{
     transform: scale(1.05);
 }
@@ -713,9 +747,6 @@ body{
 }
 
 
-.moreButton:focus, .likeButton:focus, .playButton:focus{
-    outline: none;
-}
 
 .trackListContainer{
     position: relative;
@@ -740,6 +771,9 @@ body{
     background-color: hsla(0,0%,100%,.1);
 }
 
+.highlight{
+    background-color: hsla(0,0%,100%,.1);
+}
 
 .trackItemPlay{
     box-sizing: border-box;
@@ -992,24 +1026,6 @@ body{
 .artistRowName > a:hover{
     text-decoration: underline;
 }
-
-/* @media (min-width: 768px){
-    .ArtistRowGrid{
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 992px){
-    .ArtistRowGrid{
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (min-width: 1200px){
-    .ArtistRowGrid{
-        grid-template-columns: repeat(6, 1fr);
-    }
-} */
 
 
 @media (min-width: 1024px){

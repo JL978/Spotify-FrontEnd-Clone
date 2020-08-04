@@ -2,6 +2,7 @@ import React from 'react'
 import CardInfo from './CardInfo'
 import CardDisplay from './CardDisplay'
 import {Link} from 'react-router-dom'
+import Icon from './icons'
 
 const PlayCard = React.forwardRef(({info, type}, ref) => {
     const description = returnDescription(type, info)
@@ -21,12 +22,17 @@ const PlayCard = React.forwardRef(({info, type}, ref) => {
     }
     
     return (
-        <Link to={type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)', zIndex:'3'}}>
-            <div ref={ref} className="PlayCard">
-                <CardDisplay url={image_url} type={type}/>
-                <CardInfo title={name} description={description}/>
-            </div>
-        </Link>
+        <div className='pcWrapper'>
+            <Link to={type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)', zIndex:'3'}}>
+                <div ref={ref} className="PlayCard">
+                    <CardDisplay url={image_url} type={type}/>
+                    <CardInfo title={name} description={description}/>
+                </div>
+            </Link>
+            <button className="smallButton no-outline" title="Play">
+                <Icon name="Play" height='17' width='17'/>
+            </button>
+        </div>
     )
 })
 
