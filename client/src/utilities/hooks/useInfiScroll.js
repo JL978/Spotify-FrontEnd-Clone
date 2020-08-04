@@ -13,7 +13,12 @@ function useInfiScroll(setList){
                 const [, makeRequest] = makeAxiosRequest(next)
                 makeRequest()
                     .then(data => {
-                        const resultList = data.items || data.playlists.items
+                        let resultList
+                        if (data.items && data.items[0].track){
+                            resultList = data.items.map(track => track.track)
+                        }else{
+                            resultList = data.items || data.playlists.items
+                        }
                         const next = data.next || data.playlists.next
                         setList(tracks => [...tracks, ...resultList])
                         setNext(next)

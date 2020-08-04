@@ -12,7 +12,7 @@ function useId(page) {
         if (path.length === 3){
             setId(path[path.length-1])
         }else if (path.length > 3){
-            const idIndex = path.findIndex(page) + 1
+            const idIndex = path.findIndex(path => path===page) + 1
             setId(path[idIndex])
         }else{
             setId('')

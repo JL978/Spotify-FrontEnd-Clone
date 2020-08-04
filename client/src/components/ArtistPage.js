@@ -7,11 +7,11 @@ import useId from '../utilities/hooks/useId'
 
 import PageBanner from './PageBanner'
 import PlayListFunctions from './PlayListFunctions'
-import CollectionRow from './CollectionRow'
+import AboutMenu from './AboutMenu'
 
 
 export default function ArtistPage() {
-    const id = useId()
+    const id = useId('artist')
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -24,6 +24,11 @@ export default function ArtistPage() {
     })
 
     const [tracks, setTracks] = useState([])
+    const [album, setAlbum] = useState([])
+    const [single, setSingle] = useState([])
+    const [appear, setAppear] = useState([])
+    const [compilation, setCompilation] = useState([])
+    const [related, setRelated] = useState([])
 
     useEffect(() => {
         const [, locale] = getLocale()
@@ -33,21 +38,35 @@ export default function ArtistPage() {
         const [singleSource, requestSingle] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=single`)
         const [appearSource, requestAppear] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=appears_on`)
         const [compilationSource, requestCompilation] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=compilation`)
+        const [relatedSource, requestRelated] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/related-artists`)
 
         const makeRequest = async ()=> {
             try{
                 const [artistData, 
-                        trackData, 
+                        tracksData, 
                         albumData, 
                         singleData, 
                         appearData, 
-                        compilationData] = await Promise.all([requestArtist(), requestTracks(), requestAlbum(), requestSingle(), requestAppear(), requestCompilation()])
+                        compilationData,
+                        relatedData] = await Promise.all([requestArtist(), requestTracks(), requestAlbum(), requestSingle(), requestAppear(), requestCompilation(), requestRelated()])
 
                 const {name, followers, primary_color, images} = artistData
-                const {tracks} = trackData
-                console.log(images)
                 setbannerInfo(bannerInfo => ({...bannerInfo, name, followers, primary_color, images}))
-                setTracks(tracks)
+
+                const tracks = tracksData.tracks.length > 5? tracksData.tracks.slice(0,5) : tracksData.tracks
+                const album = albumData.items
+                const single = singleData.items
+                const appear = appearData.items
+                const compilation = compilationData.items
+                const related = relatedData.artists
+
+
+                setTracks((old) => [...old, ...tracks])
+                setAlbum((old) => [...old, ...album])
+                setSingle((old) => [...old, ...single])
+                setAppear((old) => [...old, ...appear])
+                setCompilation((old) => [...old, ...compilation])
+                setRelated(old => [...old, ...related])
 
             }catch(error){ 
                 console.log(error)
@@ -63,6 +82,7 @@ export default function ArtistPage() {
             singleSource.cancel()
             appearSource.cancel()
             compilationSource.cancel()
+            relatedSource.cancel()
         }
     }, [id])
 
@@ -73,8 +93,8 @@ export default function ArtistPage() {
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
                 <PlayListFunctions type='artist'/>
-                <div className="page-content" style={{marginTop: '40px'}}>
-                    
+                <div className="page-content">
+                    <AboutMenu id={id} related = {related} tracks={tracks}/>
                 </div>
             </div>
         </div>

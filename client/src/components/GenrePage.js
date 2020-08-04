@@ -24,7 +24,7 @@ export default function GenrePage() {
             try{
                 const [nameData, listData] = await Promise.all([requestName(), requestList()])
                 setName(nameData.name)
-                console.log(nameData)
+                console.log(listData)
                 setPlayLists(listData.playlists.items)
                 setNext(listData.playlists.next)
             }catch(error){

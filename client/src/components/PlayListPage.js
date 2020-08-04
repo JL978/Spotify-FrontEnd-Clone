@@ -1,11 +1,13 @@
 import React from 'react'
-import {useEffect, useState, useRef, useCallback} from 'react'
+import {useEffect, useState} from 'react'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
 import PageBanner from './PageBanner'
 import PlayListFunctions from './PlayListFunctions'
 import TrackList from './TrackList'
+
 import useId from '../utilities/hooks/useId'
+import useInfiScroll from '../utilities/hooks/useInfiScroll'
 
 export default function PlayListPage() {
     const id = useId('playlist')
@@ -19,7 +21,8 @@ export default function PlayListPage() {
         images: [],
     })
     const [tracks, setTracks] = useState([])
-    
+    const [setNext, lastRef] = useInfiScroll(setTracks)
+
     //using the id to get the playlist's info
     useEffect(() => {
         const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/playlists/${id}`)
@@ -36,25 +39,6 @@ export default function PlayListPage() {
         return () => source.cancel()
     }, [id])
 
-
-    const [next, setNext] = useState(null) 
-    const observer = useRef()
-    const lastTrackRef = useCallback(node => {
-        if (observer.current) observer.current.disconnect()
-        observer.current = new IntersectionObserver(entries => {
-            if(entries[0].isIntersecting && next){
-                const [, makeRequest] = makeAxiosRequest(next)
-                makeRequest()
-                    .then(data => {
-                        setTracks(tracks => [...tracks, ...data.items])
-                        setNext(data.next)
-                    })
-                    .catch(error => console.log(error))
-            }
-        })
-        if (node) observer.current.observe(node)
-    }, [next])
-    
     return (
         <div className='listPage' style={{display: `${tracks.length===0? 'none':'block'}`}}>
             <PageBanner pageTitle='playlist' bannerInfo={bannerInfo}/>
@@ -62,7 +46,7 @@ export default function PlayListPage() {
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
                 <PlayListFunctions />
                 <div className="page-content">
-                    <TrackList ref={lastTrackRef} tracks={tracks} />
+                    <TrackList ref={lastRef} tracks={tracks} />
                 </div>
             </div>
         </div>
