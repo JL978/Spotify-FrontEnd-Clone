@@ -8,8 +8,7 @@ import PlayListFunctions from './PlayListFunctions'
 import TrackList from './TrackList'
 
 import useId from '../utilities/hooks/useId'
-
-import querystring from 'querystring'
+import useInfiScroll from '../utilities/hooks/useInfiScroll'
 
 export default function AlbumPage() {
     const id = useId()
@@ -29,25 +28,8 @@ export default function AlbumPage() {
 
     const [tracks, setTracks] = useState([])
 
-    const [next, setNext] = useState(null) 
-
-    const observer = useRef()
-    const lastTrackRef = useCallback(node => {
-        if (observer.current) observer.current.disconnect()
-        observer.current = new IntersectionObserver(entries => {
-            if(entries[0].isIntersecting && next){
-                const [, makeRequest] = makeAxiosRequest(next)
-                makeRequest()
-                    .then(data => {
-                        setTracks(tracks => [...tracks, ...data.items])
-                        setNext(data.next)
-                    })
-                    .catch(error => console.log(error))
-            }
-        })
-        if (node) observer.current.observe(node)
-    }, [next])
-
+    const [setNext, lastRef] = useInfiScroll(setTracks)
+    
     //using the id to get the playlist's info
     useEffect(() => {
         setTracks([])
@@ -83,7 +65,7 @@ export default function AlbumPage() {
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
                 <PlayListFunctions />
                 <div className="page-content">
-                    <TrackList ref={lastTrackRef} tracks={tracks} highlight={highlight}/>
+                    <TrackList ref={lastRef} tracks={tracks} highlight={highlight}/>
                 </div>
             </div>
         </div>
