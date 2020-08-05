@@ -6,12 +6,15 @@ import Icon from '../icons'
 class CreatePlaylist extends Component {
     render() {
         return (
-            <button className="create-button">
+            <>
+            <button className="create-button no-outline" data-tip='create' data-for='tooltip' data-event='click'>
                 <div className="playlist-icon">
                     <Icon name='Create' />
                 </div>
                 <span className="featured-label">Create Playlist</span>
             </button>
+            
+            </>
         );
     }
 }

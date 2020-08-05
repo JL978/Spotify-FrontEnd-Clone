@@ -18,7 +18,7 @@ export default function CTAbanner() {
                     lineHeight: '24px',
                     letterSpacing: 'normal',
                     textTransform: 'none'
-                }}>This is a clone website intended to be an exercise in web application building. If you are looking for the real app go to open.spotify.com</h3>
+                }}>This is a clone website intended to be an exercise in web application building - not for profit/commercial use. If you are looking for the real app go to open.spotify.com</h3>
             </div>
             <PromptButton name='Sign up free' styleName='CTA'/>
         </div>
