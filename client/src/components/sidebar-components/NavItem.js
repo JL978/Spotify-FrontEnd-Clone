@@ -8,8 +8,8 @@ import {NavLink} from 'react-router-dom'
 class NavItem extends Component {
     render() {
         return (
-            <li className='NavItem'>
-                <NavLink exact to={this.props.to} className='nav-link' activeClassName='activeMainNav'>
+            <li className='NavItem' data-tip={this.props.data_tip} data-for={this.props.data_for} data-event={this.props.data_event}>
+                <NavLink exact to={this.props.to} className='nav-link' activeClassName='activeMainNav' style={this.props.style}>
                     <div className="nav-icon">
                         <Icon name={this.props.name} />
                     </div>

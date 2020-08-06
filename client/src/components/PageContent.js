@@ -9,8 +9,12 @@ import AlbumPage from './AlbumPage'
 import UserPage from './UserPage'
 import ArtistPage from './ArtistPage'
 
+import ReactToolTip from 'react-tooltip'
+import generateContent from '../utilities/TipContent'
+
 export default function PageContent({query}) {
     return (
+        <>
         <Switch>
             <Route exact path='/'>
                 <HomePage />
@@ -34,5 +38,7 @@ export default function PageContent({query}) {
                 <ArtistPage />
             </Route>
         </Switch>
+        <ReactToolTip className='toolTip ttMain' id='tooltipMain' place='bottom' effect='solid'  backgroundColor= '#2e77d0' globalEventOff='click' getContent={dataTip => generateContent(dataTip)} clickable={true}/>
+        </>
     )
 }

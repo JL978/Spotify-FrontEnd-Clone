@@ -3,6 +3,7 @@ import CardInfo from './CardInfo'
 import CardDisplay from './CardDisplay'
 import {Link} from 'react-router-dom'
 import Icon from './icons'
+import ReactTooltip from 'react-tooltip'
 
 const PlayCard = React.forwardRef(({info, type}, ref) => {
     const description = returnDescription(type, info)
@@ -29,7 +30,7 @@ const PlayCard = React.forwardRef(({info, type}, ref) => {
                     <CardInfo title={name} description={description}/>
                 </div>
             </Link>
-            <button className="smallButton no-outline" title="Play">
+            <button className="smallButton no-outline" title="Play" data-tip='play' data-for='tooltipMain' data-event='click' >
                 <Icon name="Play" height='17' width='17'/>
             </button>
         </div>
