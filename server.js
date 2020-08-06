@@ -1,47 +1,31 @@
 const {client_id, client_secret} = require('./client_key')
+const {client_auth, authed_header} = require('./utils/client-auth')
+const randString = require('./utils/random')
 
 const axios = require('axios')
-const qs = require('querystring')
-
+const qs = require('qs')
+const cookieParser = require('cookie-parser')
 const cors = require('cors')
+var request = require('request')
 const express = require('express')
 const http = require('http')
 
 const PORT = process.env.PORT || 4000
-
 const app = express()
 const server = http.createServer(app)
+
 app.use(cors())
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-const client_auth = ()=>{
-    return new Promise((res, rej) =>{
-        const config = {
-            headers: {
-                'Content-Type':'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
-            }
-        }
-    
-        const authOptions = {
-            grant_type: 'client_credentials'
-        }
 
-        axios.post('https://accounts.spotify.com/api/token', qs.stringify(authOptions), config)
-            .then((response) => res(response.data.access_token))
-            .catch((error) => rej(error))
-    })
-}
+const redirect_uri = 'http://localhost:4000/callback'
+const front_end_uri = 'http://localhost:3000'
+const stateKey = 'spotify_auth_state';
+const scope = 'user-read-private user-read-playback-state streaming user-modify-playback-state playlist-modify-public user-library-modify user-top-read user-read-currently-playing playlist-read-private user-follow-read user-read-recently-played playlist-modify-private user-follow-modify user-library-read user-read-email';
 
-const authed_header = (token) => ({
-    headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": 'Bearer ' + token
-    }
-})
-
+//endpoint to send a full spotify endpoint to request data
 app.post('/', (req, res) => {
     const endpoint = req.body.endpoint
     client_auth()
@@ -58,5 +42,82 @@ app.post('/', (req, res) => {
         .catch((error) => res.send(error))
 })
 
+//aux endpoint to make and store a cookie value as the state and redirect to the spotify authorization page
+app.get('/login', function(req, res) {
+    //respond with randomly generated cookie value for the state key - used to prevent XSRF  
+    const state = randString(16);
+    res.cookie(stateKey, state);
+  
+    //redirect to the spotify authentification page with the required parameters
+    res.redirect('https://accounts.spotify.com/authorize?' +
+      qs.stringify({
+        response_type: 'code',
+        client_id: client_id,
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state,
+        show_dialog: true
+      }));
+  });
+
+
+app.get('/callback', function(req, res) {
+    const code = req.query.code || null;
+    const state = req.query.state || null;
+    const storedState = req.cookies ? req.cookies[stateKey] : null;
+
+    //cross checking the callback state and the stored state
+    if (state === null || state !== storedState) {
+      res.redirect(front_end_uri +
+        qs.stringify({
+          error: 'state_mismatch'
+        }));
+    } else {
+        //statekey is not needed anymore since it is to be newly generated every request
+      res.clearCookie(stateKey);
+
+      const authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        form: {
+          code: code,
+          redirect_uri: redirect_uri,
+          grant_type: 'authorization_code'
+        },
+        headers: {
+          'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
+        },
+        json: true
+      };
+      
+      //make the request to get token
+      request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+          var access_token = body.access_token,
+              refresh_token = body.refresh_token;
+            
+          // Redirecting to front end with access and refresh token as hash params 
+          res.redirect(front_end_uri + '/#' +
+              qs.stringify({
+              access_token: access_token,
+              refresh_token: refresh_token
+              }));
+        } else {
+          res.redirect(front_end_uri + '/#' +
+            qs.stringify({
+              error: 'invalid_token'
+            }));
+            console.log(error)
+        }
+      });
+    }
+  });
+  
+
+//example of options to send to spotify  --> to be used on front end to get info
+//   var options = {
+//     url: 'https://api.spotify.com/v1/me',
+//     headers: { 'Authorization': 'Bearer ' + access_token },
+//     json: true
+//   };
 
 server.listen(PORT, ()=>console.log(`Listening on port ${PORT}`))

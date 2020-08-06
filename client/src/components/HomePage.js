@@ -15,7 +15,9 @@ export default function HomePage() {
         const [language, locale] = getLocale()
         const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/browse/categories?limit=6&country=${locale}&locale=${language}_${locale}`)
         makeRequest()
-            .then((data) => setCollections(data.categories.items))
+            .then((data) => {
+                setCollections(data.categories.items)
+            })
             .catch((error) => console.log(error))
         
         return () => source.cancel()
