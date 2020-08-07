@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
-import FeaturedPlaylist from './FeaturedPlaylist.js'
-// import OtherPlaylist from './OtherPlaylist.js'
+import React from 'react';
 
 //Playlists components - contain 2 other main component - the featured playlist link (with icons) and the other playlist (just the links)
-class PlayLists extends Component {
-    render() {
-        return (
-            <div className='playlists'>
-                <h1 className='play-title'>playlists</h1>
-                <FeaturedPlaylist />
-                <hr className="list-separator"/>
-                {/* <OtherPlaylist /> */}
-            </div>
-        );
-    }
+function PlayLists({top, bottom}){
+    return (
+        <div className='playlists'>
+            <h1 className='play-title'>playlists</h1>
+            {top}
+            <hr className="list-separator"/>
+            {bottom}
+        </div>
+    );
 }
 
 export default PlayLists;

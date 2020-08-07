@@ -194,20 +194,22 @@ body{
     margin: 4px 0;
     overflow: hidden;
     flex:1;
-    max-height: min-content;
     min-height: 100px;
     overflow-y: auto;
 }
 
 
 .other-list{
+    position: relative;
     list-style: none;
     white-space: nowrap;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: scroll;
 }
 
 .side-list{
     margin: 0 var(--side-bar-margin);
-    
 }
 
 .list-link{

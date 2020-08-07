@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import CreatePLaylist from './CreatePlaylist.js'
-import FeaturedItem from './FeaturedItem.js'
+
 
 
 //Featured playlist containing 2 main components - the button to make a new playlist and a featured item (the liked songs playlist)
-class FeaturedPlaylist extends Component {
-    render() {
-        return (
-            <>
+function FeaturedPlaylist({children}) {
+    return (
+        <>
             <div className="featured-playlists">
                 <CreatePLaylist />
-                <FeaturedItem label='Liked Songs'/>
+                {children}
             </div>
-            </>
-        );
-    }
+        </>
+    );
 }
 
 

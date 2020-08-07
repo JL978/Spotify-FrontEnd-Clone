@@ -14,7 +14,12 @@ const PORT = process.env.PORT || 4000
 const app = express()
 const server = http.createServer(app)
 
-app.use(cors())
+var corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true
+}
+
+app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -23,6 +28,7 @@ app.use(express.urlencoded({ extended: true }))
 const redirect_uri = 'http://localhost:4000/callback'
 const front_end_uri = 'http://localhost:3000'
 const stateKey = 'spotify_auth_state';
+const refreshKey = 'refresh_key'
 const scope = 'user-read-private user-read-playback-state streaming user-modify-playback-state playlist-modify-public user-library-modify user-top-read user-read-currently-playing playlist-read-private user-follow-read user-read-recently-played playlist-modify-private user-follow-modify user-library-read user-read-email';
 
 //endpoint to send a full spotify endpoint to request data
@@ -90,17 +96,17 @@ app.get('/callback', function(req, res) {
       };
       
       //make the request to get token
+      
       request.post(authOptions, function(error, response, body) {
         if (!error && response.statusCode === 200) {
           var access_token = body.access_token,
               refresh_token = body.refresh_token;
-            
+          
+              res.cookie(refreshKey, refresh_token)
           // Redirecting to front end with access and refresh token as hash params 
           res.redirect(front_end_uri + '/#' +
-              qs.stringify({
-              access_token: access_token,
-              refresh_token: refresh_token
-              }));
+              qs.stringify({access_token, refresh_token}))
+
         } else {
           res.redirect(front_end_uri + '/#' +
             qs.stringify({
@@ -112,6 +118,35 @@ app.get('/callback', function(req, res) {
     }
   });
   
+
+app.get('/refresh_token', (req, res) => {
+  const refresh_key = req.cookies.refresh_key;
+
+  var authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: { 'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64')) },
+    form: {
+      grant_type: 'refresh_token',
+      refresh_token: refresh_key
+    },
+    json: true
+  };
+
+  request.post(authOptions, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+      var {access_token, refresh_token} = body;
+      //in case a new refresh token is sent back
+      if (refresh_token){
+        res.cookie(refresh_token)
+      }
+      res.send({access_token});
+
+    }else{
+      res.status(400).send()
+    }
+  });
+});
+
 
 //example of options to send to spotify  --> to be used on front end to get info
 //   var options = {
