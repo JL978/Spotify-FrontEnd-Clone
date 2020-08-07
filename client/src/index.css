@@ -195,6 +195,7 @@ body{
     overflow: hidden;
     flex:1;
     min-height: 100px;
+    max-height: min-content;
     overflow-y: auto;
 }
 
@@ -202,10 +203,8 @@ body{
 .other-list{
     position: relative;
     list-style: none;
+    height: 0;
     white-space: nowrap;
-    height: 100% !important;
-    max-height: 100% !important;
-    overflow-y: scroll;
 }
 
 .side-list{
