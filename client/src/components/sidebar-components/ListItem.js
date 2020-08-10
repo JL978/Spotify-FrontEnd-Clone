@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
+import {NavLink} from 'react-router-dom'
 
 //Linked list items
-class ListItem extends Component {
-    render() {
-        return (
-            <li className={this.props.class}>
-                <a href="#" class='list-link'>
-                    <div className="list-wrapper">
-                        {this.props.playlist}
-                    </div>
-                </a>
-            </li>
-        );
-    }
+function ListItem({name, id}) {
+    return (
+        <li className='side-list'>
+            <NavLink to={`/playlist/${id}`} className='list-link' activeStyle={{color: '#fff'}}>
+                <div className="list-wrapper">
+                    {name}
+                </div>
+            </NavLink>
+        </li>
+    );
 }
 
 export default ListItem;

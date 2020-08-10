@@ -1,17 +1,12 @@
 import React from 'react'
-import HistoryNav from './HistoryNav'
-import UserPrompt from './UserPrompt'
-import SearchBar from './SearchBar'
-import {Route} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 
-export default function Headerbar({query, setQuery, resetQuery}) {
+export default function Headerbar({children}) {
+    const location = useLocation()
+
     return (
-        <div className="header-bar">
-            <HistoryNav />
-            <Route exact path='/search'>
-                <SearchBar query={query} setQuery={setQuery} resetQuery={resetQuery}/>
-            </Route>
-            <UserPrompt />
+        <div className="header-bar" style={{background: location.pathname === '/'? null:'none'}}>
+            {children}
         </div>
     )
 }

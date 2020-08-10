@@ -35,7 +35,6 @@ export default function PageContent({query}) {
 
                 const {display_name, owner, followers, primary_color, images} = userData
                 const {items, total, next} = listData
-                console.log(next)
                 setbannerInfo(bannerInfo => ({...bannerInfo, name:display_name, user:[owner], followers, primary_color, images, total}))
                 setplayLists(items)
                 setNext(next)

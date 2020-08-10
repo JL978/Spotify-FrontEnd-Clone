@@ -2,8 +2,6 @@ import React from 'react'
 import TrackListItem from './TrackListItem'
 
 const TrackList = React.forwardRef(({tracks, style, highlight}, ref) => {
-    console.log(highlight)
-
     return (
         <div className="trackListContainer">
             <ol className="trackList">

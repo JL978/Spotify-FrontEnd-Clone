@@ -15,9 +15,15 @@ const app = express()
 const server = http.createServer(app)
 
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', /\.localhost:3000/],
   credentials: true
 }
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.use(cors(corsOptions))
 app.use(cookieParser())
@@ -142,17 +148,15 @@ app.get('/refresh_token', (req, res) => {
       res.send({access_token});
 
     }else{
-      res.status(400).send()
+      res.status(400).send(body.error)
     }
   });
 });
 
+app.get('/logout', (req, res) => {
+  res.clearCookie(refreshKey)
+  res.status(200).send('logged out')
+})
 
-//example of options to send to spotify  --> to be used on front end to get info
-//   var options = {
-//     url: 'https://api.spotify.com/v1/me',
-//     headers: { 'Authorization': 'Bearer ' + access_token },
-//     json: true
-//   };
 
 server.listen(PORT, ()=>console.log(`Listening on port ${PORT}`))

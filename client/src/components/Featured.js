@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import {Route} from 'react-router-dom'
+
 import Headerbar from './Headerbar'
 import PageContent from './PageContent'
+import HistoryNav from './HistoryNav'
+import UserPrompt from './UserPrompt'
+import SearchBar from './SearchBar'
+import UserInfo from './UserInfo'
 
-function Featured (){
+
+function Featured ({loggedIn}){
     const [query, setQuery] = useState('')
 
     const resetQuery = ()=>{
@@ -11,7 +18,18 @@ function Featured (){
 
     return (
         <div className='featured'>
-            <Headerbar query={query} setQuery={setQuery} resetQuery={resetQuery}/>
+            <Headerbar>
+                <HistoryNav />
+                <Route exact path='/search'>
+                    <SearchBar query={query} setQuery={setQuery} resetQuery={resetQuery}/>
+                </Route>
+                {loggedIn? 
+                    <UserInfo />
+                    :
+                    <UserPrompt />
+                }
+            </Headerbar>
+
             <PageContent query={query}/>
         </div>
     );

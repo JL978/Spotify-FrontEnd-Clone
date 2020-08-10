@@ -14,35 +14,44 @@ import InstallCTA from './components/sidebar-components/InstallCTA.js'
 import Player from './components/Player.js'
 import Featured from './components/Featured.js'
 
-
-
 import getHashParams from './utilities/getHashParams'
-import {LoginContext} from './utilities/context'
+import reqWithToken from './utilities/reqWithToken'
+import {UserContext} from './utilities/context'
 
 
 function App() {
   const [loading, setLoading] = useState(true)
   const [loggedIn, setloggedIn] = useState(false)
   const [token, setToken] = useState(null)
+  const [userInfo, setuserInfo] = useState({})
 
   useEffect(() => {
     var params = getHashParams();
     const {access_token, error} = params
+    
+    let infoSource
 
     if (error){
       setLoading(false)
       //TODO: some form of popup to show that an error has occured
       console.log(error)
-
     }else{
 
       if (access_token) {
         setToken(access_token)
         setloggedIn(true)
         window.location.hash = ''
-        setLoading(false)
 
-        //If nothing is found on in the hash params -> check with the server if there is a refresh token in the cookie
+        let requestUserInfo
+        [infoSource, requestUserInfo] = reqWithToken('https://api.spotify.com/v1/me', access_token) 
+        requestUserInfo()
+          .then((response) => {
+            setuserInfo(response.data)
+          })
+          .catch(error => console.log(error))
+
+        setLoading(false)
+        //If nothing is found on in the hash params -> check with the server if there is a valid refresh token in the cookie
       }else{
         setloggedIn(false)
         Axios('http://localhost:4000/refresh_token', {withCredentials: true})
@@ -50,6 +59,15 @@ function App() {
             const access_token = response.data.access_token
             setToken(access_token)
             setloggedIn(true)
+            
+            let requestUserInfo
+            [infoSource, requestUserInfo] = reqWithToken('https://api.spotify.com/v1/me', access_token) 
+            requestUserInfo()
+              .then((response) => {
+                setuserInfo(response.data)
+              })
+              .catch(error => console.log(error))
+
             //TODO: set loading to false and show the logged in version
             setLoading(false)
           })
@@ -60,6 +78,8 @@ function App() {
           })
       }
     }
+
+    return (()=> infoSource.cancel())
   }, [])
 
 
@@ -67,8 +87,8 @@ function App() {
     <div className="App">
       {loading? 
         <Loading /> :
-        <LoginContext.Provider
-          value={loggedIn}>
+        <UserContext.Provider
+          value={userInfo}>
 
             <Sidebar>
               <Logo />
@@ -86,11 +106,11 @@ function App() {
               {loggedIn? <InstallCTA /> : null}
             </Sidebar>
 
-            <Featured />
+            <Featured loggedIn={loggedIn}/>
 
             <Player />
 
-        </LoginContext.Provider>
+        </UserContext.Provider>
       }
     </div>
   );
