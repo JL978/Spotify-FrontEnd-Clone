@@ -16,57 +16,69 @@ import Featured from './components/Featured.js'
 
 import getHashParams from './utilities/getHashParams'
 import reqWithToken from './utilities/reqWithToken'
-import {UserContext} from './utilities/context'
-
+import {UserContext, LoginContext, tokenContext, TokenContext} from './utilities/context'
 
 function App() {
   const [loading, setLoading] = useState(true)
   const [loggedIn, setloggedIn] = useState(false)
   const [token, setToken] = useState(null)
   const [userInfo, setuserInfo] = useState({})
+  const [playlists, setPlaylists] = useState([])
 
   useEffect(() => {
     var params = getHashParams();
     const {access_token, error} = params
-    
-    let infoSource
 
+    var cancelSource = Axios.CancelToken.source()
     if (error){
       setLoading(false)
       //TODO: some form of popup to show that an error has occured
       console.log(error)
     }else{
-
       if (access_token) {
         setToken(access_token)
         setloggedIn(true)
         window.location.hash = ''
 
-        let requestUserInfo
-        [infoSource, requestUserInfo] = reqWithToken('https://api.spotify.com/v1/me', access_token) 
-        requestUserInfo()
-          .then((response) => {
-            setuserInfo(response.data)
-          })
-          .catch(error => console.log(error))
+        const makeRequests = async() => {
+          const requestUserInfo = reqWithToken('https://api.spotify.com/v1/me', access_token, cancelSource) 
+          const requestPlayList = reqWithToken(`https://api.spotify.com/v1/me/playlists`, access_token, cancelSource)
+
+          try{
+            const [_userInfo, _playlists] = await Promise.all([requestUserInfo(), requestPlayList()])
+            setuserInfo(_userInfo.data)
+            setPlaylists(_playlists.data.items)
+          }catch(error){
+            console.log(error)
+          }
+        }
+        
+        makeRequests()
 
         setLoading(false)
-        //If nothing is found on in the hash params -> check with the server if there is a valid refresh token in the cookie
+      //If nothing is found on in the hash params -> check with the server if there is a valid refresh token in the cookie
       }else{
-        setloggedIn(false)
         Axios('http://localhost:4000/refresh_token', {withCredentials: true})
           .then((response) => {
             const access_token = response.data.access_token
             setToken(access_token)
             setloggedIn(true)
             
-            let requestUserInfo
-            [infoSource, requestUserInfo] = reqWithToken('https://api.spotify.com/v1/me', access_token) 
-            requestUserInfo()
-              .then((response) => {
-                setuserInfo(response.data)
-              })
-              .catch(error => console.log(error))
+            const makeRequests = async() => {
+              const requestUserInfo = reqWithToken('https://api.spotify.com/v1/me', access_token, cancelSource) 
+              const requestPlayList = reqWithToken(`https://api.spotify.com/v1/me/playlists`, access_token, cancelSource)
+    
+              try{
+                const [_userInfo, _playlists] = await Promise.all([requestUserInfo(), requestPlayList()])
+                setuserInfo(_userInfo.data)
+                setPlaylists(_playlists.data.items)
+
+              }catch(error){
+                console.log(error)
+              }
+            }
+            
+            makeRequests()
 
             //TODO: set loading to false and show the logged in version
             setLoading(false)
@@ -79,38 +91,45 @@ function App() {
       }
     }
 
-    return (()=> infoSource.cancel())
+    return (()=> {
+      cancelSource.cancel()
+    })
   }, [])
-
 
   return (
     <div className="App">
       {loading? 
         <Loading /> :
-        <UserContext.Provider
-          value={userInfo}>
-
+        <LoginContext.Provider
+          value={loggedIn}>
+            
             <Sidebar>
               <Logo />
               <NavList>
-                <NavItem to='/' name='Home' label='Home' />
-                <NavItem to='/search' name='Search' label='Search' />
-                <NavItem to='/collection' name='Library' label='Your Library' data_tip='library' data_for='tooltip' data_event='click' style={{ pointerEvents: loggedIn? 'auto':'none'}}/>
+                <NavItem to='/' exact={true} name='Home' label='Home' />
+                <NavItem to='/search' exact={true} name='Search' label='Search' />
+                <NavItem to='/collection' exact={false} name='Library' label='Your Library' data_tip='library' data_for='tooltip' data_event='click' style={{ pointerEvents: loggedIn? 'auto':'none'}}/>
               </NavList>
               <PlayLists 
                 top={<FeaturedPlaylist>
                         <FeaturedItem label='Liked Songs' loggedIn={loggedIn}/>
                       </FeaturedPlaylist>}
-                bottom={<OtherPlaylist token={token}/>}
+                bottom={<OtherPlaylist playlists={playlists}/>}
               />
               {loggedIn? <InstallCTA /> : null}
             </Sidebar>
 
-            <Featured loggedIn={loggedIn}/>
+            <UserContext.Provider value={userInfo}>
+              <TokenContext.Provider value={token}>
 
+                <Featured loggedIn={loggedIn} playlists={playlists}/>
+                
+              </TokenContext.Provider>
+            </UserContext.Provider>
+            
             <Player />
 
-        </UserContext.Provider>
+        </LoginContext.Provider>
       }
     </div>
   );

@@ -32,15 +32,13 @@ const ctaStyle ={
     padding: '8px 48px'
 }
 
-export default function PromptButton({name, styleName, onClick}) {
+export default function PromptButton({to, name, styleName, onClick}) {
     return (
-        name !== 'Sign Up' && name !== 'Sign up free'? 
-        <a href='http://localhost:4000/login'>
-            <button className="PromptButton no-outline" name={name} style={switchStyle(styleName)} onClick={onClick}>{name}</button>
+        to? 
+        <a href={to}>
+            <button className="PromptButton no-outline" name={name} style={switchStyle(styleName)} >{name}</button>
         </a>
             :
-        <a href='https://spotify.com/signup'>
-            <button className="PromptButton no-outline" name={name} style={switchStyle(styleName)}>{name}</button>
-        </a>
+        <button className="PromptButton no-outline" name={name} style={switchStyle(styleName)} onClick={onClick}>{name}</button>
     )
 }

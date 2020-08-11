@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-const reqWithToken = (endpoint, access_token) =>{
-    let source = axios.CancelToken.source()
-
+const reqWithToken = (endpoint, access_token, cancelSource) =>{
     const request = async () => {
+        const cancelToken = cancelSource.token
         const options = {
             url: endpoint,
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + access_token },
+            cancelToken
         };
         let result
         try{
@@ -19,7 +19,7 @@ const reqWithToken = (endpoint, access_token) =>{
         return result 
     }
     
-    return [source, request]
+    return request
 }
 
 export default reqWithToken

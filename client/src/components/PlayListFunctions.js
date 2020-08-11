@@ -6,7 +6,7 @@ export default function PlayListFunctions({type}) {
     return (
         <div className="playListFunctions">
             {switchType(type)}
-            <button className="moreButton no-outline" title="More">• • •</button>
+            
         </div>
     )
 }
@@ -14,10 +14,13 @@ export default function PlayListFunctions({type}) {
 
 function switchType(type){
     switch (type) {
+        case 'playOnly':
+            return <PlayButtonLarge/>
         case 'user':
             return (
                 <>
                     <FollowButton />
+                    <MoreButton />
                 </>
             )
         case 'artist':
@@ -25,6 +28,7 @@ function switchType(type){
                 <>
                     <PlayButtonLarge />
                     <FollowButton />
+                    <MoreButton />
                 </>
             )
         default:
@@ -32,6 +36,7 @@ function switchType(type){
                 <>
                     <PlayButtonLarge />
                     <LikeButton />
+                    <MoreButton />
                 </>
             )
     }
@@ -57,5 +62,11 @@ function LikeButton(){
 function FollowButton(){
     return (
         <button className="followButton no-outline" data-tip='follow' data-for='tooltipMain' data-event='click'>follow</button>
+    )
+}
+
+function MoreButton(){
+    return (
+        <button className="moreButton no-outline" title="More">• • •</button>
     )
 }

@@ -1,5 +1,5 @@
-import React from 'react'
-import {Switch, Route} from 'react-router-dom'
+import React, {useContext} from 'react'
+import {Switch, Route, Redirect} from 'react-router-dom'
 
 import HomePage from './HomePage'
 import SearchPage from './SearchPage'
@@ -8,11 +8,16 @@ import PlayListPage from './PlayListPage'
 import AlbumPage from './AlbumPage'
 import UserPage from './UserPage'
 import ArtistPage from './ArtistPage'
+import CollectionPage from './CollectionPage'
+import LikePage from './LikePage'
 
 import ReactToolTip from 'react-tooltip'
 import generateContent from '../utilities/TipContent'
+import {LoginContext} from '../utilities/context'
 
-export default function PageContent({query}) {
+export default function PageContent({query, playlists}) {
+    const loggedIn = useContext(LoginContext)
+
     return (
         <>
         <Switch>
@@ -37,8 +42,15 @@ export default function PageContent({query}) {
             <Route path='/artist'>
                 <ArtistPage />
             </Route>
+            <Route path='/collection'>
+                {loggedIn ? <Redirect to='/collection/playlist'/>:<Redirect to='/'/>}
+                <CollectionPage playlists={playlists}/>
+            </Route>
+            <Route path='/tracks'>
+                {loggedIn ? <LikePage />:<Redirect to='/'/>}
+            </Route>
         </Switch>
-        <ReactToolTip className='toolTip ttMain' id='tooltipMain' place='bottom' effect='solid'  backgroundColor= '#2e77d0' globalEventOff='click' getContent={dataTip => generateContent(dataTip)} clickable={true}/>
+        <ReactToolTip className='toolTip ttMain' id='tooltipMain' disable={loggedIn} place='bottom' effect='solid'  backgroundColor= '#2e77d0' globalEventOff='click' getContent={dataTip => generateContent(dataTip)} clickable={true}/>
         </>
     )
 }
