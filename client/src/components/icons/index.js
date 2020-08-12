@@ -12,7 +12,12 @@ import Play from './Play'
 import Music from './Music'
 import Music2 from './Music2'
 import CD from './CD'
-
+import TrackBack from './TrackBack'
+import TrackNext from './TrackNext'
+import Shuffle from './Shuffle'
+import Repeat from './Repeat'
+import Speaker from './Speaker'
+import Volume from './Volume'
 
 import React from 'react'
 
@@ -46,6 +51,20 @@ export default function Icon(props) {
             return <Music2 />
         case 'CD':
             return <CD />
+        case 'CD':
+            return <CD />
+        case 'TrackBack':
+            return <TrackBack />
+        case 'TrackNext':
+            return <TrackNext />
+        case 'Shuffle':
+            return <Shuffle />
+        case 'Repeat':
+            return <Repeat />
+        case 'Speaker':
+            return <Speaker />
+        case 'Volume':
+            return <Volume />
         default:
             return null
     }

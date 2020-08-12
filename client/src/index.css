@@ -1,7 +1,8 @@
 :root{
     --spotify-green: #1db954;
+    --spotify-green-bright: #1ed760;
     --main-text: #b3b3b3; 
-    /* --player-height: 92px; */
+    --player-height: 90px;
     --side-bar-margin: 24px;
 }
 
@@ -256,12 +257,299 @@ body{
     color:#fff;
 }
 
-.player{
-    /* height: var(--player-height); */
+.footer{
+    min-width: 768px;
     background: #282828;
     border-top: 1px solid #000;
     grid-column: 1/-1;
     position:sticky;
+}
+
+.player{
+    height: var(--player-height);
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.player-left, .player-right{
+    width: 30%;
+    min-width: 180px;
+}
+
+.player-right{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.extra-controls{
+    width: 180px;
+    display: flex;
+    align-items: center;
+}
+
+.volume-control{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 136px;
+}
+
+.now-playing{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    transition: transform .25s cubic-bezier(.3,0,0,1)
+}
+
+
+.player-cover{
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    box-shadow: 0 0 10px rgba(0,0,0,.3);
+    margin: 0;
+    display: block;
+    border: 0;
+    position: relative;
+    z-index: 0;
+    background-color: #282828;
+}
+
+.player-cover > div {
+    position: absolute;
+    top: 35%;
+    bottom: 35%;
+    left: 35%;
+    right: 35%;
+}
+
+
+.player-cover > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: 50%;
+    background-color: #000;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    object-position: center center;
+}
+
+.player-cover > div > svg{
+    width: 100%;
+    height: 100%;
+}
+
+.player-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 14px;
+    min-width: 105px;
+}
+
+
+.player-info-track > a{
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: .015em;
+    color: #fff;
+    text-align: left;
+    text-decoration: none;
+}
+
+.player-info-artist > a{
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: .015em;
+    text-align: left;
+    color: var(--main-text);
+    text-decoration: none;
+}
+
+.player-info-track > a:hover, 
+.player-info-artist > a:hover{
+    text-decoration: underline;
+}
+
+.player-like-button{
+    background-color: transparent;
+    border: none;
+    color: #b3b3b3;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.player-like-button > svg{
+    width: 15px;
+    height: 15px;
+}
+
+.player-like-button:hover{
+    color:#fff;
+}
+
+
+.player-center{
+    width: 40%;
+    max-width: 722px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-control-buttons{
+    display:flex;
+    margin-bottom: 12px;
+    width: 224px;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.control-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    color: #b3b3b3;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    position: relative;
+}
+
+.control-button:hover{
+    color:#fff;
+}
+
+.control-button.circle-border{
+    border-radius: 500px;
+    border: 1px solid hsla(0,0%,100%,.6);
+}
+
+.control-button.circle-border:hover{
+    transform: scale(1.07);
+    border-color: #fff;
+}
+
+.control-button.active{
+    color: var(--spotify-green)
+}
+
+.control-button.active:hover{
+    color: var(--spotify-green-bright)
+}
+
+.control-button > svg{
+    width: 15px;
+    height: 15px;
+}
+
+.control-button.smaller > svg{
+    width: 11px;
+    height: 11px;
+}
+
+.control-button.larger > svg{
+    width: 16px;
+    height: 16px;
+}
+
+.control-button.x-larger > svg{
+    width: 19px;
+    height: 19px;
+}
+
+.player-playback{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.playback-time{
+    min-width: 40px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: normal;
+    text-transform: none;
+    user-select: none;
+}
+
+.progress-wrapper{
+    height: 12px;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+
+.progress-bar{
+    background-color: #535353;
+    border-radius: 2px;
+    display: flex;
+    height: 4px;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+.progress{
+    background-color: #b3b3b3;
+    border-radius: 2px;
+    height: 4px;
+    width: 100%;
+    transform: translateX(-100%);
+}
+
+.progress-wrapper:hover .progress{
+    background-color: var(--spotify-green);
+}
+
+.progress-slider{
+    background-color: #fff;
+    border: 0;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    z-index: 100;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.5);
+    opacity: 0;
+    position: absolute;
+    left: 0
+}
+
+.progress-wrapper:hover .progress-slider{
+    opacity: 1;
+}
+
+.control-button.volume:hover + div .progress.volume{
+    background-color: var(--spotify-green);
+}
+
+.control-button.volume:hover + div .progress-slider.volume{
+    opacity: 1;
 }
 
 .featured{

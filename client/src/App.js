@@ -11,7 +11,7 @@ import FeaturedItem from './components/sidebar-components/FeaturedItem.js'
 import OtherPlaylist from './components/sidebar-components/OtherPlaylist.js'
 import InstallCTA from './components/sidebar-components/InstallCTA.js'
 
-import Player from './components/Player.js'
+import Footer from './components/Footer.js'
 import Featured from './components/Featured.js'
 
 import getHashParams from './utilities/getHashParams'
@@ -123,11 +123,11 @@ function App() {
               <TokenContext.Provider value={token}>
 
                 <Featured loggedIn={loggedIn} playlists={playlists}/>
-                
+
               </TokenContext.Provider>
             </UserContext.Provider>
             
-            <Player />
+            <Footer />
 
         </LoginContext.Provider>
       }
