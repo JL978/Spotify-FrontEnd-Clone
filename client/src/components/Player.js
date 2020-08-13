@@ -1,8 +1,34 @@
-import React from 'react';
+import React, {useState, useReducer, useRef} from 'react';
 import Icon from './icons'
 import ProgressBar from './ProgressBar'
 
 const Player = () => {
+    const playBackState = {
+        shuffle: false,
+        play: false,
+        repeat: false
+    }
+
+    const reducer = (playBack, action) => {
+        switch (action){
+            case 'play':
+                return {...playBack, play: !playBack.play}
+            case 'shuffle':
+                return {...playBack, shuffle: !playBack.shuffle}
+            case 'repeat':
+                return {...playBack, repeat: !playBack.repeat}
+            default:
+                throw new Error()
+        }
+    }
+
+    const [state, dispatch] = useReducer(reducer, playBackState)
+
+    const [playback, setPlayback] = useState(0.5)
+    const [volume, setVolume] = useState(1)
+
+
+
     return (
         <div className='player'>
 
@@ -26,7 +52,7 @@ const Player = () => {
                     </div>
 
                     <div className="player-like">
-                        <button title='Save to your Liked Songs' className="player-like-button">
+                        <button title='Save to your Liked Songs' className="player-like-button no-outline">
                             <Icon name='Heart' />
                         </button>
                     </div>
@@ -37,50 +63,53 @@ const Player = () => {
             <div className="player-center">
                 <div className="player-control-buttons">
 
-                    <button title='Toggle Shuffle' className='control-button active'>
+                    <button title='Toggle Shuffle' className={`control-button ${state.shuffle? 'active':null} no-outline`} onClick={()=> dispatch('shuffle')}>
                         <Icon name='Shuffle'/>
                     </button>
 
-                    <button title='Previous' className='control-button smaller'>
+                    <button title='Previous' className='control-button x-smaller no-outline'>
                         <Icon name='TrackBack'/>
                     </button>
 
-                    <button title='Play' className='control-button larger circle-border'>
-                        <Icon name='Play'/>
+                    <button title={state.play ? 'Pause':'Play'} className={`control-button ${state.play? 'smaller':'larger'} circle-border no-outline`} onClick={()=> dispatch('play')}>
+                        {state.play ? 
+                            <Icon name='Pause'/>:
+                            <Icon name='Play'/>
+                        }
                     </button>
 
-                    <button title= 'Next' className='control-button smaller'>
+                    <button title= 'Next' className='control-button x-smaller no-outline'>
                         <Icon name='TrackNext'/>
                     </button>
 
-                    <button title='Toggle Repeat' className='control-button'>
+                    <button title='Toggle Repeat' className={`control-button ${state.repeat? 'active':null} no-outline`} onClick={()=> dispatch('repeat')} >
                         <Icon name='Repeat'/>
                     </button>
 
                 </div>
 
                 <div className="player-playback">
-                    <div className="playback-time">1:18</div>
+                    <div className="playback-time" draggable={false}>1:18</div>
 
-                        <ProgressBar extraClass='' progress={0.2}/> 
+                        <ProgressBar extraClass='' value={playback} engageClass='engage'/> 
 
-                    <div className="playback-time">3:24</div>
+                    <div className="playback-time" draggable={false}>3:24</div>
                 </div>
             </div>
 
             <div className="player-right">
                 <div className="extra-controls">
 
-                    <button className='control-button x-larger'>
+                    <button className='control-button x-larger no-outline'>
                         <Icon name='Speaker'/>
                     </button>
 
                     <div className="volume-control">
-                        <button className='control-button x-larger volume'>
+                        <button className='control-button x-larger volume no-outline'>
                             <Icon name='Volume'/>
                         </button>
                         <div style={{width:'100%'}}>
-                            <ProgressBar extraClass='volume' progress={0.5}/> 
+                            <ProgressBar extraClass='volume' value={volume} engageClass='engage'/> 
                         </div>
                     </div>
 

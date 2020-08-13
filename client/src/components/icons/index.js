@@ -18,6 +18,7 @@ import Shuffle from './Shuffle'
 import Repeat from './Repeat'
 import Speaker from './Speaker'
 import Volume from './Volume'
+import Pause from './Pause'
 
 import React from 'react'
 
@@ -65,6 +66,8 @@ export default function Icon(props) {
             return <Speaker />
         case 'Volume':
             return <Volume />
+        case 'Pause':
+            return <Pause />
         default:
             return null
     }
