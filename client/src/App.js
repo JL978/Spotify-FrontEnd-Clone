@@ -10,8 +10,9 @@ import FeaturedPlaylist from './components/sidebar-components/FeaturedPlaylist.j
 import FeaturedItem from './components/sidebar-components/FeaturedItem.js'
 import OtherPlaylist from './components/sidebar-components/OtherPlaylist.js'
 import InstallCTA from './components/sidebar-components/InstallCTA.js'
-
 import Footer from './components/Footer.js'
+import CTAbanner from './components/CTAbanner'
+import Player from './components/Player'
 import Featured from './components/Featured.js'
 
 import getHashParams from './utilities/getHashParams'
@@ -90,11 +91,24 @@ function App() {
           })
       }
     }
-
     return (()=> {
       cancelSource.cancel()
     })
   }, [])
+
+
+  
+  const refreshToken = async () => {
+    try{
+      const response = await Axios('http://localhost:4000/refresh_token', {withCredentials: true})
+      const access_token = response.data.access_token
+      setToken(access_token)
+      return access_token
+
+    }catch(error){
+      console.log(error)
+    }
+  }
 
   return (
     <div className="App">
@@ -119,15 +133,18 @@ function App() {
               {loggedIn? <InstallCTA /> : null}
             </Sidebar>
 
-            <UserContext.Provider value={userInfo}>
-              <TokenContext.Provider value={token}>
+            <TokenContext.Provider value={token}>
+                <UserContext.Provider value={userInfo}>
+                  <Featured loggedIn={loggedIn} playlists={playlists}/>
+                </UserContext.Provider>
+            </TokenContext.Provider>
 
-                <Featured loggedIn={loggedIn} playlists={playlists}/>
-
-              </TokenContext.Provider>
-            </UserContext.Provider>
+            <Footer>
+                {/* <CTAbanner /> */}
+                <Player userInfo={userInfo} refreshToken={refreshToken}/>
+            </Footer>
+                
             
-            <Footer />
 
         </LoginContext.Provider>
       }

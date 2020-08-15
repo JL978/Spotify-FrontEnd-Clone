@@ -1,35 +1,36 @@
 import React, {useState, useEffect, useRef} from 'react';
 
-const ProgressBar = ({extraClass, value, engageClass}) => {
+const ProgressBar = ({extraClass, value, engageClass, setValue}) => {
     const [engage, setEngage] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const [scrub, setScrub] = useState(null)
 
     const wrapperRef = useRef(null)
 
-    useEffect(() => {
-        window.addEventListener('mouseup', (e) => {
-            setIsDragging(false)
-            setScrub(null)
-            if (!e.target.classList.contains('progress-wrapper') &&
-                !e.target.classList.contains('progress-bar') &&
-                !e.target.classList.contains('progress') &&
-                !e.target.classList.contains('progress-slider') ){
-                setEngage(false)
-            }
-        })
-        
-
-        return () => {
-            window.removeEventListener('mouseup')
-            
-        }
-    }, [])
 
     useEffect(() => {
         window.addEventListener('mousemove', handleMove)
-        return () => window.removeEventListener('mousemove', handleMove)
+        window.addEventListener('mouseup', handleMouseUp)
+        
+        return () => {
+            window.removeEventListener('mousemove', handleMove)
+            window.removeEventListener('mouseup', handleMouseUp)
+        }
     })
+
+    const handleMouseUp = (e) => {
+        setIsDragging(false)
+        if (engage){
+            setValue(scrub)
+        }
+        setScrub(null)
+        if (!e.target.classList.contains('progress-wrapper') &&
+            !e.target.classList.contains('progress-bar') &&
+            !e.target.classList.contains('progress') &&
+            !e.target.classList.contains('progress-slider') ){
+            setEngage(false)
+        }
+    }
 
     const handleMove = (e) => {
         if (engage && isDragging) {
@@ -41,8 +42,7 @@ const ProgressBar = ({extraClass, value, engageClass}) => {
             }else if (offsetRatio > 1){
                 offsetRatio = 1
             }
-            
-            console.log(offsetRatio)
+
             setScrub(offsetRatio)
         }
     }

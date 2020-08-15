@@ -1,13 +1,59 @@
-import React, {useState, useReducer, useRef} from 'react';
+import React, {useState, useReducer, useEffect, useContext} from 'react';
+import axios from 'axios'
 import Icon from './icons'
 import ProgressBar from './ProgressBar'
 
-const Player = () => {
+const Player = ({userInfo, refreshToken}) => {
     const playBackState = {
         shuffle: false,
         play: false,
         repeat: false
     }
+
+    useEffect(() => {
+        if(userInfo.product === 'premium'){
+            const script = document.createElement("script")
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            //script.async = true;
+            document.body.appendChild(script);
+            
+            // const initScript = document.createElement("script")
+            // initScript.innerHTML = 
+            // window.onSpotifyWebPlaybackSDKReady = () => {
+            //     const player = new Spotify.Player({
+            //         name: 'Clone Player',
+            //         getOAuthToken: callback => {
+            //             refreshToken()
+            //                 .then((access_token) => callback(access_token))
+            //                 .catch(error => console.log(error))
+            //         }
+            //     })
+
+            //     player.connect().then(success => {
+            //         if (success) {
+            //           console.log('The Web Playback SDK successfully connected to Spotify!');
+            //         }
+            //       })
+            // };
+            
+        }
+    }, [userInfo])
+
+
+    // useEffect(() => {
+    //     const source = axios.CancelToken.source()
+    //     axios({
+    //        method: 'get',
+    //        url: 'https://api.spotify.com/v1/me/player',
+    //        headers: { 'Authorization': 'Bearer ' + access_token },
+    //        responseType: 'stream',
+    //        cancelToken: source.token
+    //     })
+    //     .then((response) => console.log(response))
+    //     .catch((error) => console.log(error))
+
+    //    return () => source.cancel()
+    // })
 
     const reducer = (playBack, action) => {
         switch (action){
@@ -26,8 +72,6 @@ const Player = () => {
 
     const [playback, setPlayback] = useState(0.5)
     const [volume, setVolume] = useState(1)
-
-
 
     return (
         <div className='player'>
@@ -88,10 +132,10 @@ const Player = () => {
 
                 </div>
 
-                <div className="player-playback">
+                <div className="player-playback" draggable={false}>
                     <div className="playback-time" draggable={false}>1:18</div>
 
-                        <ProgressBar extraClass='' value={playback} engageClass='engage'/> 
+                        <ProgressBar extraClass='playback' value={playback} engageClass='engage' setValue={(ratio) => setPlayback(ratio)}/> 
 
                     <div className="playback-time" draggable={false}>3:24</div>
                 </div>
@@ -109,7 +153,7 @@ const Player = () => {
                             <Icon name='Volume'/>
                         </button>
                         <div style={{width:'100%'}}>
-                            <ProgressBar extraClass='volume' value={volume} engageClass='engage'/> 
+                            <ProgressBar extraClass='volume' value={volume} engageClass='engage' setValue={(ratio) => setVolume(ratio)}/> 
                         </div>
                     </div>
 
