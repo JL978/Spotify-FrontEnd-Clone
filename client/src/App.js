@@ -96,20 +96,6 @@ function App() {
     })
   }, [])
 
-
-  
-  const refreshToken = async () => {
-    try{
-      const response = await Axios('http://localhost:4000/refresh_token', {withCredentials: true})
-      const access_token = response.data.access_token
-      setToken(access_token)
-      return access_token
-
-    }catch(error){
-      console.log(error)
-    }
-  }
-
   return (
     <div className="App">
       {loading? 
@@ -140,12 +126,9 @@ function App() {
             </TokenContext.Provider>
 
             <Footer>
-                {/* <CTAbanner /> */}
-                <Player userInfo={userInfo} refreshToken={refreshToken}/>
+              {loggedIn? <Player token={token}/>: <CTAbanner/>}
             </Footer>
                 
-            
-
         </LoginContext.Provider>
       }
     </div>

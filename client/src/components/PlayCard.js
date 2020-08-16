@@ -24,7 +24,7 @@ const PlayCard = React.forwardRef(({info, type}, ref) => {
     
     return (
         <div className='pcWrapper'>
-            <Link to={type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)', zIndex:'3'}}>
+            <Link to={info.to? info.to : type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)', zIndex:'3'}}>
                 <div ref={ref} className="PlayCard">
                     <CardDisplay url={image_url} type={type}/>
                     <CardInfo title={name} description={description}/>

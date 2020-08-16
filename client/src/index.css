@@ -263,6 +263,7 @@ body{
     border-top: 1px solid #000;
     grid-column: 1/-1;
     position:sticky;
+    z-index: 4;
 }
 
 .player{
@@ -380,6 +381,11 @@ body{
     text-decoration: none;
 }
 
+.player-info-artist > a:not(:last-child)::after{
+    content: ',\00a0';
+    display: inline-block;
+}
+
 .player-info-track > a:hover, 
 .player-info-artist > a:hover{
     text-decoration: underline;
@@ -491,6 +497,108 @@ body{
     justify-content: space-between;
     align-items: center;
     user-select: none;
+}
+
+.connect-devices-wrapper{
+    position: relative
+}
+
+/* .connect-devices-wrapper > button {
+    position: absolute
+} */
+
+.connect-devices{
+    position: absolute;
+    width: 280px;
+    bottom: 40px;
+    right: -122px;
+    display: none;
+    background: #282828;
+    border-radius: 5px;
+    z-index: 999;
+    box-shadow: 0 4px 12px 4px rgba(0,0,0,.5);
+    display: block;
+    animation: fadeIn 333ms cubic-bezier(.3,0,0,1);
+}
+
+.connect-devices::before{
+    bottom: -20px;
+    left: auto;
+    right: 138px;
+    margin-left: -10px;
+    margin-right: -10px;
+    border: 10px solid transparent;
+    border-top-color: #282828;
+    position: absolute;
+    content: "";
+}
+
+.connect-devices-content{
+    padding: 5px;
+    overflow-y: auto;
+    max-height: calc(100vh - 90px);
+    user-select: none;
+}
+
+.connect-devices-title{
+    
+    position: relative;
+    text-align: center;
+    color: #fff;
+}
+
+.connect-devices-title > h1{
+    letter-spacing: normal;
+    text-transform: none;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    display: block;
+    padding: 14px 14px 10px 14px;
+}
+
+.cd-img{
+    text-align: center;
+    padding: 16px 0;
+}
+
+.cd-img > img {
+    width: 180px;
+}
+
+.connect-devices-list {
+    margin: 0 -5px -5px;
+}
+
+.connect-devices-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #282828;
+    border: 0;
+    padding: 10px 15px;
+    position: relative;
+    width: 100%;
+    color: #fff;
+    width: 280px;
+    height: 57px;
+}
+
+.connect-devices-items:not(.disable):hover{
+    background-color: #333;
+}
+
+.connect-devices-items.active{
+    color: var(--spotify-green)
+}
+
+.cd-info>h1 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .playback-time{

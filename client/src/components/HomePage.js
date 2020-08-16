@@ -45,7 +45,7 @@ export default function HomePage() {
     return (
         <div className="page-content">
             <div className='pageContent'>
-                <CollectionRow name='Uniquely Yours' id={null} playlists={[{id:'', description:'', name:'Liked Songs', images:[{url: 'https://misc.scdn.co/liked-songs/liked-songs-300.png'}]}]}/>
+                <CollectionRow name='Uniquely Yours' id={null} playlists={[{id:'', to:'/tracks', description:'', name:'Liked Songs', images:[{url: 'https://misc.scdn.co/liked-songs/liked-songs-300.png'}]}]}/>
                 {   
                     Object.entries(playlistsMap).map(([name, info]) => {
                         const {id, playlists} = info

@@ -1,5 +1,5 @@
 export default function msTimeFormat(ms){
-    const s = Math.round(ms/1000)
+    const s = Math.floor(ms/1000)
     const min = Math.floor(s /60) 
     const sec = (s - min*60) 
 
