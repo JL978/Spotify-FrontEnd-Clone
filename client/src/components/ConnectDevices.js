@@ -5,13 +5,15 @@ import reqWithToken from '../utilities/reqWithToken'
 import putWithToken from '../utilities/putWithToken'
 
 
-const ConnectDevices = ({token}) => {
+const ConnectDevices = ({token, closeTip}) => {
     const [devices, setDevices] = useState([])
 
+    const source = axios.CancelToken.source()
     useEffect(() => {
-        const source = axios.CancelToken.source()
+        
         const requestDevices = reqWithToken('https://api.spotify.com/v1/me/player/devices', token, source) 
 
+        window.addEventListener('click', clickExit)
         requestDevices()
             .then(response => {
                 const _devices = response.data.devices
@@ -19,41 +21,42 @@ const ConnectDevices = ({token}) => {
             })
             .catch(error => console.log(error))
 
-        return () => source.cancel()
+        return () => {
+            window.removeEventListener('click', clickExit)
+            source.cancel()
+        }
     }, [])
+
+    const clickExit = (e) => {
+        if (e.target.dataset.source !== 'inside'){
+            closeTip()
+        }
+    }
 
     const switchDevice = (e) => {
         const id = e.currentTarget.dataset.id
-        const source = axios.CancelToken.source()
         const data = {device_ids:[id]}
         const reqTransfer = putWithToken('https://api.spotify.com/v1/me/player', token, source ,data)
         reqTransfer()
             .then(response => {
                 if (response.status === 204){
-                    const _devices = devices.map((device) => {
-                        if (device.id === id){
-                            return {...device, is_active: true}
-                        }else{
-                            return {...device, is_active: false}
-                        }
-                    })
-                    setDevices(_devices)
+                    closeTip()
                 }
             })
             .catch(error => console.log(error))
     }
 
     return (
-        <div className='connect-devices'>
-            <div className='connect-devices-content'>
-                <div className='connect-devices-title'>
-                    <h1>Connect to a device</h1>
-                    <p>Due to the limitation of the Spotify API, no streaming is available from this app.</p>
-                    <br></br>
-                    <p>This app, however, works as a remote controller - log in to an official Spotify app to checkout this feature</p>
+        <div className='connect-devices' data-source='inside'>
+            <div className='connect-devices-content' data-source='inside'>
+                <div className='connect-devices-title' data-source='inside'>
+                    <h1 data-source='inside'>Connect to a device</h1>
+                    <p data-source='inside'>Due to the limitation of the Spotify API, no streaming is available from this app.</p>
+                    <br data-source='inside'></br>
+                    <p data-source='inside'>This app, however, works as a remote controller - log in to an official Spotify app to checkout this feature</p>
                 </div>
-                <div className='cd-img'>
-                    <img loading='lazy' src="https://open.scdn.co/cdn/images/connect_header@1x.ecc6912d.png" alt="" draggable='false'/>
+                <div className='cd-img' data-source='inside'>
+                    <img loading='lazy' data-source='inside' src="https://open.scdn.co/cdn/images/connect_header@1x.ecc6912d.png" alt="" draggable='false'/>
                 </div>
 
                 {devices.length === 0? 

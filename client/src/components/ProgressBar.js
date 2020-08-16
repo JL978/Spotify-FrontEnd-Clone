@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 
-const ProgressBar = ({extraClass, value, engageClass, setValue}) => {
+const ProgressBar = ({extraClass, value, engageClass, setValue, scrubFunction}) => {
     const [engage, setEngage] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const [scrub, setScrub] = useState(null)
@@ -42,7 +42,10 @@ const ProgressBar = ({extraClass, value, engageClass, setValue}) => {
             }else if (offsetRatio > 1){
                 offsetRatio = 1
             }
-
+            
+            if(scrubFunction){
+                scrubFunction(offsetRatio)
+            }
             setScrub(offsetRatio)
         }
     }
@@ -67,6 +70,7 @@ const ProgressBar = ({extraClass, value, engageClass, setValue}) => {
     return (
         <div ref={wrapperRef} className="progress-wrapper" onMouseEnter={handleEnter} onMouseLeave={handleLeave} onMouseDown={handleMouseDown}>
             <div className={`progress-bar`} >
+                {/* {console.log(((1-(scrub || value))*100).toFixed(1))} */}
                 <div className={`progress ${extraClass} ${engage? engageClass:''}`} style={{transform: `translate(-${((1-(scrub || value))*100).toFixed(2)}%)`}} ></div>
             </div>
             <button className={`progress-slider ${extraClass} no-outline ${engage? engageClass:''}`} style={{left: `${((scrub || value)*100).toFixed(2)}%`}} ></button>

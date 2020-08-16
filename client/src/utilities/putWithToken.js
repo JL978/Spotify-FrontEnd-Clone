@@ -1,16 +1,16 @@
 import axios from 'axios'
 
-const putWithToken = (endpoint, access_token, cancelSource, data) =>{
+const putWithToken = (endpoint, access_token, cancelSource, data, method='PUT') =>{
     const request = async () => {
         const cancelToken = cancelSource.token
         const options = {
             url: endpoint,
-            method: 'PUT',
+            method,
             headers: { 'Authorization': 'Bearer ' + access_token },
             data,
             cancelToken
         };
-        
+
         let result
         try{
             result = await axios(options)
