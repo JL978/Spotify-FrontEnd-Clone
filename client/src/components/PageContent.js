@@ -13,30 +13,10 @@ import LikePage from './LikePage'
 
 import ReactToolTip from 'react-tooltip'
 import generateContent from '../utilities/TipContent'
-import {LoginContext} from '../utilities/context'
+import {LoginContext, MessageContext} from '../utilities/context'
 
-export default function PageContent({query, playlists, refreshPlaylist}) {
+export default function PageContent({query, playlists, refreshPlaylist, message, status}) {
     const loggedIn = useContext(LoginContext)
-
-    const [status, setStatus] = useState(false) 
-    const [message, setMessage] = useState('')
-
-    const timerRef = useRef(null)
-
-    const setStatusMessage = (message) => {
-        clearTimeout(timerRef.current)
-        setStatus(true)
-        setMessage(message)
-        timerRef.current = setTimeout(() => {
-            setStatus(false)
-        }, 3000)
-    }
-
-    useEffect(() => {
-        return () => {
-            clearTimeout(timerRef.current)
-        }
-    }, [])
 
     return (
         <>
@@ -51,16 +31,16 @@ export default function PageContent({query, playlists, refreshPlaylist}) {
                 <GenrePage />
             </Route>
             <Route path='/playlist'>
-                <PlayListPage playlists={playlists} refreshPlaylist={refreshPlaylist} setMessage={(message)=>setStatusMessage(message)}/>
+                <PlayListPage playlists={playlists} refreshPlaylist={refreshPlaylist} />
             </Route>
             <Route path='/album' >
-                <AlbumPage setMessage={(message)=>setStatusMessage(message)}/>
+                <AlbumPage />
             </Route>
             <Route path='/user' >
-                <UserPage setMessage={(message)=>setStatusMessage(message)}/>
+                <UserPage />
             </Route>
             <Route path='/artist' >
-                <ArtistPage setMessage={(message)=>setStatusMessage(message)}/>
+                <ArtistPage />
             </Route>
             <Route path='/collection'>
                 {loggedIn ? <Redirect to='/collection/playlist'/>:<Redirect to='/'/>}

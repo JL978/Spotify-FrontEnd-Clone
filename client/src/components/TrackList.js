@@ -1,15 +1,15 @@
 import React from 'react'
 import TrackListItem from './TrackListItem'
 
-const TrackList = React.forwardRef(({tracks, style, highlight}, ref) => {
+const TrackList = React.forwardRef(({tracks, style, highlight, playContextTrack}, ref) => {
     return (
         <div className="trackListContainer">
             <ol className="trackList">
                 {tracks.map((track, index) => {
                     if (index+1 < tracks.length){
-                        return <TrackListItem track={track} key={track.id} style={style} highlight={track.id === highlight}/>
+                        return <TrackListItem track={track} key={track.id} style={style} highlight={track.id === highlight} playContextTrack={playContextTrack}/>
                     }else{
-                        return <TrackListItem ref={ref} track={track} key={track.id} style={style} highlight={track.id === highlight}/>
+                        return <TrackListItem ref={ref} track={track} key={track.id} style={style} highlight={track.id === highlight} playContextTrack={playContextTrack}/>
                     }
                 })}
             </ol>

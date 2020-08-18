@@ -11,7 +11,8 @@ import UserInfo from './UserInfo'
 import CollectionNav from './CollectionNav'
 
 
-function Featured ({loggedIn, playlists, refreshPlaylist}){
+function Featured (props){
+    const loggedIn = props.loggedIn
     const [query, setQuery] = useState('')
 
     const resetQuery = ()=>{
@@ -35,7 +36,7 @@ function Featured ({loggedIn, playlists, refreshPlaylist}){
 
             </Headerbar>
 
-            <PageContent query={query} playlists={playlists} refreshPlaylist={refreshPlaylist}/>
+            <PageContent query={query} {...props}/>
         </div>
     );
 }

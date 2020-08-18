@@ -1,16 +1,16 @@
 import React, {useContext} from 'react'
 import Icon from './icons'
 import ReactTooltip from 'react-tooltip'
-import {LoginContext} from '../utilities/context'
+import {LoginContext, PlayContext} from '../utilities/context'
 
-export default function PlayListFunctions({type, follow, onFollow, setMessage}) {
+export default function PlayListFunctions({type, follow, onFollow, setMessage, playContext}) {
     const loggedIn = useContext(LoginContext)
 
     switch (type) {
         case 'playOnly':
             return (
                 <div className="playListFunctions">
-                    <PlayButtonLarge loggedIn={loggedIn}/>
+                    <PlayButtonLarge loggedIn={loggedIn} playContext={playContext}/>
                 </div>
             )
         case 'none':
@@ -30,7 +30,7 @@ export default function PlayListFunctions({type, follow, onFollow, setMessage}) 
         case 'artist':
             return (
                 <div className="playListFunctions">
-                    <PlayButtonLarge loggedIn={loggedIn}/>
+                    <PlayButtonLarge loggedIn={loggedIn} playContext={playContext}/>
                     <FollowButton follow={follow} onFollow={onFollow} loggedIn={loggedIn}/>
                     <MoreButton onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}/>
                 </div>
@@ -38,7 +38,7 @@ export default function PlayListFunctions({type, follow, onFollow, setMessage}) 
         default:
             return (
                 <div className="playListFunctions">
-                    <PlayButtonLarge loggedIn={loggedIn}/>
+                    <PlayButtonLarge loggedIn={loggedIn} playContext={playContext}/>
                     <LikeButton follow={follow} onFollow={onFollow} loggedIn={loggedIn}/>
                     <MoreButton onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}/>
                 </div>
@@ -47,10 +47,14 @@ export default function PlayListFunctions({type, follow, onFollow, setMessage}) 
 }
 
 
-function PlayButtonLarge({loggedIn}){
+function PlayButtonLarge({loggedIn, playContext}){
+    const updatePlayer = useContext(PlayContext)
     if (loggedIn){
         return (
-            <button className="playButton no-outline" title="Play" >
+            <button className="playButton no-outline" title="Play" onClick={() => {
+                playContext()
+                updatePlayer()
+            }}>
                 <Icon name="Play" height='28' width='28'/>
             </button>
         )

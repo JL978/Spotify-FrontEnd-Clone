@@ -8,6 +8,7 @@ import PlayCard from './PlayCard'
 import useId from '../utilities/hooks/useId'
 import useInfiScroll from '../utilities/hooks/useInfiScroll'
 
+
 export default function GenrePage() {
     const id = useId()
 
@@ -24,7 +25,6 @@ export default function GenrePage() {
             try{
                 const [nameData, listData] = await Promise.all([requestName(), requestList()])
                 setName(nameData.name)
-                console.log(listData)
                 setPlayLists(listData.playlists.items)
                 setNext(listData.playlists.next)
             }catch(error){

@@ -1,13 +1,23 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import {useHistory} from 'react-router-dom'
+import axios from 'axios'
 import CardInfo from './CardInfo'
 import CardDisplay from './CardDisplay'
 import {Link} from 'react-router-dom'
 import Icon from './icons'
-import ReactTooltip from 'react-tooltip'
+
+import putWithToken from '../utilities/putWithToken'
+import {TokenContext, LoginContext, PlayContext} from '../utilities/context'
 
 const PlayCard = React.forwardRef(({info, type}, ref) => {
+    const history = useHistory()
     const description = returnDescription(type, info)
-    const {name, id} = info
+    const {name, id, uri} = info
+
+    const token = useContext(TokenContext)
+    const loggedIn = useContext(LoginContext)
+    const updatePlayer = useContext(PlayContext)
+    const source = axios.CancelToken.source()
 
     let images
     if (type === 'track'){
@@ -22,6 +32,29 @@ const PlayCard = React.forwardRef(({info, type}, ref) => {
         image_url = null 
     }
     
+    const playContext = () => {
+        if (uri){
+            var body
+            if (type === 'track'){
+                body = {
+                    uris: [uri]
+                }
+            }else{
+                body = {
+                    context_uri: uri
+                }
+            }
+            const request = putWithToken(`https://api.spotify.com/v1/me/player/play`, token, source, body)
+            request()
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => console.log(error))
+        }else{
+            history.push(`/tracks`)
+        }
+    }
+
     return (
         <div className='pcWrapper'>
             <Link to={info.to? info.to : type === 'track'? `/album/${info.album.id}?highlight=${id}`:`/${type}/${id}`} style={{textDecoration:'none', color:'var(--main-text)', zIndex:'3'}}>
@@ -30,9 +63,19 @@ const PlayCard = React.forwardRef(({info, type}, ref) => {
                     <CardInfo title={name} description={description}/>
                 </div>
             </Link>
-            <button className="smallButton no-outline" title="Play" data-tip='play' data-for='tooltipMain' data-event='click' >
+            {loggedIn? 
+            <button className="smallButton no-outline" title="Play" onClick={() => {
+                playContext()
+                updatePlayer()
+            }}>
                 <Icon name="Play" height='17' width='17'/>
             </button>
+            :
+            <button className="smallButton no-outline" title="Play" data-tip='play' data-for='tooltipMain' data-event='click'>
+                <Icon name="Play" height='17' width='17'/>
+            </button>
+            }
+            
         </div>
     )
 })

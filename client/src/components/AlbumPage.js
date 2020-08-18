@@ -1,5 +1,5 @@
-import React from 'react'
-import {useEffect, useState, useRef, useCallback} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
+import axios from 'axios'
 import {useLocation} from 'react-router-dom'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
@@ -9,9 +9,13 @@ import TrackList from './TrackList'
 
 import useId from '../utilities/hooks/useId'
 import useInfiScroll from '../utilities/hooks/useInfiScroll'
+import {TokenContext, MessageContext} from '../utilities/context'
+import putWithToken from '../utilities/putWithToken'
 
-export default function AlbumPage({setMessage}) {
+export default function AlbumPage() {
     const id = useId()
+    const token = useContext(TokenContext)
+    const setMessage = useContext(MessageContext)
 
     const highlight = useHighlight()
 
@@ -27,9 +31,9 @@ export default function AlbumPage({setMessage}) {
     })
 
     const [tracks, setTracks] = useState([])
-
+    const [uri, setUri] = useState('')
     const [setNext, lastRef] = useInfiScroll(setTracks)
-    
+    const source = axios.CancelToken.source()
     //using the id to get the playlist's info
     useEffect(() => {
         setTracks([])
@@ -44,28 +48,63 @@ export default function AlbumPage({setMessage}) {
             images: [],
             release_date: ''
         })
+        setUri('')
         const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/albums/${id}`)
 
         makeRequest()
             .then((data) => {
-                const {album_type, name, artists, primary_color, tracks, images, release_date} = data
+                const {album_type, name, artists, primary_color, tracks, images, release_date, uri} = data
                 setbannerInfo(bannerInfo => ({...bannerInfo, album_type, name, user:artists, primary_color, images, release_date}))
                 setTracks(tracks.items)
                 setNext(tracks.next)
+                setUri(uri)
             })
             .catch((error) => console.log(error))
         
         return () => source.cancel()
     }, [id])
 
+    const playContext = () => {
+        const body = {
+            context_uri: uri
+        }
+        const request = putWithToken(`https://api.spotify.com/v1/me/player/play`, token, source, body)
+        request()
+            .then(response => {
+                if (response.status === 204){
+                    //TODO: setPlay
+                }else{
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                }
+            })
+            .catch(error => setMessage(`ERROR: ${error}`))
+    }
+
+    const playContextTrack = (trackUri) => {
+        const body = {
+            context_uri: uri,
+            offset: {uri: trackUri}
+        }
+        const request = putWithToken(`https://api.spotify.com/v1/me/player/play`, token, source, body)
+        request()
+            .then(response => {
+                if (response.status === 204){
+                    //TODO: setPlay
+                }else{
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                }
+            })
+            .catch(error => setMessage(`ERROR: ${error}`))
+    }
+
     return (
         <div className='listPage' style={{display: `${tracks.length===0? 'none':'block'}`}}>
             <PageBanner pageTitle={bannerInfo.album_type} bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions onFollow={() => setMessage('Oops looks like the Spotify API does not support following albums')} setMessage={setMessage}/>
+                <PlayListFunctions onFollow={() => setMessage('Oops looks like the Spotify API does not support following albums')} setMessage={setMessage} playContext={playContext}/>
                 <div className="page-content">
-                    <TrackList ref={lastRef} tracks={tracks} highlight={highlight}/>
+                    <TrackList ref={lastRef} tracks={tracks} highlight={highlight} playContextTrack={playContextTrack}/>
                 </div>
             </div>
         </div>

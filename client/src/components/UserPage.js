@@ -9,15 +9,17 @@ import CollectionRow from './CollectionRow'
 
 import useId from '../utilities/hooks/useId'
 import useInfiScroll from '../utilities/hooks/useInfiScroll'
-import {UserContext, TokenContext, LoginContext} from '../utilities/context'
+import {UserContext, TokenContext, LoginContext, MessageContext} from '../utilities/context'
 import reqWithToken from '../utilities/reqWithToken'
 import putWithToken from '../utilities/putWithToken'
 
-export default function UserPage({query}) {
+export default function UserPage({query, setMessage}) {
     const id = useId()
     const user = useContext(UserContext)
     const token = useContext(TokenContext)
     const loggedIn = useContext(LoginContext)
+    const setStatusMessage = useContext(MessageContext)
+
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -34,6 +36,18 @@ export default function UserPage({query}) {
     const [follow, setFollow] = useState(false)
     const source = axios.CancelToken.source()
     useEffect(() => {
+        setbannerInfo({
+            name: '',
+            description: '',
+            user: [],
+            followers: 0,
+            primary_color: 'rgb(83, 83, 83)',
+            images: [],
+            total: 0
+        })
+        setFollow(false)
+        setplayLists([])
+        
         const [userSource, requestUser] = makeAxiosRequest(`https://api.spotify.com/v1/users/${id}`)
         const [listSource, requestList] = makeAxiosRequest(`https://api.spotify.com/v1/users/${id}/playlists`)
 
@@ -76,12 +90,17 @@ export default function UserPage({query}) {
             request()
                 .then(response => {
                     if (response.status === 204){
+                        if (follow){
+                            setMessage(`Unsaved from your collection`)
+                        }else{
+                            setMessage(`Saved to your collection`)
+                        }
                         setFollow(!follow)
                     }else{
-                        console.log(response)
+                        setStatusMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 })
-                .catch(error => console.log(error))
+                .catch(error => setStatusMessage(`ERROR: ${error}`))
         }
     }
 
@@ -90,7 +109,7 @@ export default function UserPage({query}) {
             <PageBanner pageTitle='profile' bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions type={id === user.id? 'none':'user'} follow={follow} onFollow={followUser}/>
+                <PlayListFunctions type={id === user.id? 'none':'user'} follow={follow} onFollow={followUser} setMessage={setMessage}/>
                 <div className="page-content" style={{marginTop: '40px'}}>
                     <CollectionRow ref={lastRef} name='Public Playlists' id={null} playlists={playLists}/>
                 </div>

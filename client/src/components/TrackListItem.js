@@ -1,10 +1,11 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Icon from './icons'
 import msTimeFormat from '../utilities/utils'
+import {PlayContext} from '../utilities/context'
 
-
-const TrackListItem = React.forwardRef(({track, style, highlight}, ref)  => {
-    const {album, artists, name, explicit, duration_ms} = track
+const TrackListItem = React.forwardRef(({track, style, highlight, playContextTrack}, ref)  => {
+    const {album, artists, name, explicit, duration_ms, uri} = track
+    const updatePlayer = useContext(PlayContext)
 
     let thumbNail 
     if (style === 'simplify' && album.images.length > 0){
@@ -15,9 +16,12 @@ const TrackListItem = React.forwardRef(({track, style, highlight}, ref)  => {
         <li ref={ref} className={`trackListItem ${highlight? 'highlight':null}`}>
         
             <div className="trackItemPlay" style={style === 'simplify' ? simplyStyle:null}>
-                <div className={style === 'simplify'? "hoverIcon":"hoverIcon trackTopAlign"}>
+                <button className={style === 'simplify'? "hoverIcon no-outline":"hoverIcon trackTopAlign no-outline"} onClick={() => {
+                    playContextTrack(uri)
+                    updatePlayer()
+                }}>
                     <Icon name='Play' height='20' width='20'/>
-                </div>
+                </button>
                 <div className={style ==='simplify'? "itemIcon":"itemIcon trackTopAlign"} style={{marginTop: style === 'simplify' ? '0':null}}>
                     <Icon name='Music'/>
                 </div>

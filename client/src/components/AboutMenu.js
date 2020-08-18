@@ -5,7 +5,7 @@ import AboutNavItem from './AboutNavItem'
 import RowGrid from './RowGrid'
 import ArtistRow from './ArtistRow'
 
-const AboutMenu = ({id, related, tracks, album, single, appear, compilation}) => {
+const AboutMenu = ({id, related, tracks, album, single, appear, compilation, playContextTrack}) => {
     return (
         <>
             <nav className="menuNav">
@@ -17,7 +17,7 @@ const AboutMenu = ({id, related, tracks, album, single, appear, compilation}) =>
             
             <div style={{paddingTop: '1.5em', position:"relative"}}>
                 <Route exact path={`/artist/${id}`}>
-                    <ArtistRow title='Popular' display='list' list={tracks}/> 
+                    <ArtistRow title='Popular' display='list' list={tracks} playContextTrack={playContextTrack}/> 
                     <ArtistRow title='Albums' display='grid' list={album}/> 
                     <ArtistRow title='Singles and EPs' display='grid' list={single}/> 
                     <ArtistRow title='Compilations' display='grid' list={appear}/> 

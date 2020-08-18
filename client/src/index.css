@@ -1363,9 +1363,7 @@ body{
     height: 100%;
 }
 
-.trackTopAlign{
-    margin-top: .75em;
-}
+
 
 .trackMidAlign{
     height: 100%;
@@ -1383,6 +1381,13 @@ body{
     display: none;
     color: #fff;
     z-index: 3;
+    background: none;
+    border: none;
+    margin:0;
+}
+
+.trackTopAlign{
+    margin-top: .75em;
 }
 
 .trackListItem:hover .itemIcon{
@@ -1390,7 +1395,7 @@ body{
 }
 
 .trackListItem:hover .hoverIcon{
-    display: block;
+    display: inline-block;
 }
 
 

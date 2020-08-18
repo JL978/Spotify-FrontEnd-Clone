@@ -2,7 +2,7 @@ import React from 'react'
 import {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
-import {TokenContext, LoginContext} from '../utilities/context'
+import {TokenContext, LoginContext, MessageContext} from '../utilities/context'
 
 import PageBanner from './PageBanner'
 import PlayListFunctions from './PlayListFunctions'
@@ -11,12 +11,12 @@ import TrackList from './TrackList'
 import useId from '../utilities/hooks/useId'
 import useInfiScroll from '../utilities/hooks/useInfiScroll'
 import putWithToken from '../utilities/putWithToken'
-import reqWithToken from '../utilities/reqWithToken'
 
-export default function PlayListPage({playlists, refreshPlaylist, setMessage}) {
+export default function PlayListPage({playlists, refreshPlaylist}) {
     const id = useId('playlist')
     const loggedIn = useContext(LoginContext)
     const token = useContext(TokenContext)
+    const setMessage = useContext(MessageContext)
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -29,10 +29,12 @@ export default function PlayListPage({playlists, refreshPlaylist, setMessage}) {
     const [tracks, setTracks] = useState([])
     const [like, setLike] = useState(false)
     const [setNext, lastRef] = useInfiScroll(setTracks)
+    const [uri, setUri] = useState('')
+    const source = axios.CancelToken.source()
 
-    //using the id to get the playlist's info
     useEffect(() => {
         setLike(false)
+        setUri('')
         setbannerInfo({
             name: '',
             description: '',
@@ -43,14 +45,15 @@ export default function PlayListPage({playlists, refreshPlaylist, setMessage}) {
         })
         setTracks([])
 
-        const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/playlists/${id}`)
+        const [playSource, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/playlists/${id}`)
 
         makeRequest()
             .then((data) => {
-                const {name, description, owner, followers, primary_color, tracks, images} = data
+                const {name, description, owner, followers, primary_color, tracks, images, uri} = data
                 setbannerInfo(bannerInfo => ({...bannerInfo, name, description, user:[owner], followers, primary_color, images}))
                 setTracks(tracks.items.map((track) => track.track))
                 setNext(tracks.next)
+                setUri(uri)
             })
             .catch((error) => console.log(error))
         
@@ -63,11 +66,13 @@ export default function PlayListPage({playlists, refreshPlaylist, setMessage}) {
             }
         }
 
-        return () => source.cancel()
+        return () => {
+            playSource.cancel()
+            source.cancel()
+        }
     }, [id])
 
     const followPlaylist = () => {
-        const source = axios.CancelToken.source()
         const followReq = putWithToken(`https://api.spotify.com/v1/playlists/${id}/followers`, token, source, {}, like?'DELETE':'PUT')
         followReq()
             .then(response => {
@@ -79,11 +84,44 @@ export default function PlayListPage({playlists, refreshPlaylist, setMessage}) {
                     }
                     setLike(!like)
                     refreshPlaylist()
-                } else{
-                    console.log(response)
+                }else{
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
             })
-            .catch(error => console.log(error))
+            .catch(error => setMessage(`ERROR: ${error}`))
+    }
+
+    const playContext = () => {
+        const body = {
+            context_uri: uri
+        }
+        const request = putWithToken(`https://api.spotify.com/v1/me/player/play`, token, source, body)
+        request()
+            .then(response => {
+                if (response.status === 204){
+                    //TODO: setPlay
+                }else{
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                }
+            })
+            .catch(error => setMessage(`ERROR: ${error}`))
+    }
+
+    const playContextTrack = (trackUri) => {
+        const body = {
+            context_uri: uri,
+            offset: {uri: trackUri}
+        }
+        const request = putWithToken(`https://api.spotify.com/v1/me/player/play`, token, source, body)
+        request()
+            .then(response => {
+                if (response.status === 204){
+                    //TODO: setPlay
+                }else{
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                }
+            })
+            .catch(error => setMessage(`ERROR: ${error}`))
     }
 
     return (
@@ -91,9 +129,9 @@ export default function PlayListPage({playlists, refreshPlaylist, setMessage}) {
             <PageBanner pageTitle='playlist' bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions onFollow={followPlaylist} follow={like} setMessage={setMessage}/>
+                <PlayListFunctions onFollow={followPlaylist} follow={like} setMessage={setMessage} playContext={playContext}/>
                 <div className="page-content">
-                    <TrackList ref={lastRef} tracks={tracks} />
+                    <TrackList ref={lastRef} tracks={tracks} playContextTrack={playContextTrack}/>
                 </div>
             </div>
         </div>

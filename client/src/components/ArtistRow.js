@@ -3,13 +3,13 @@ import ArtistRowTitle from './ArtistRowTitle'
 import TrackList from './TrackList'
 import ArtistRowGrid from './ArtistRowGrid'
 
-const ArtistRow = ({title, display, list}) => {
+const ArtistRow = ({title, display, list, playContextTrack}) => {
     if (list && list.length > 0) {
         return (
             <div>
                 <ArtistRowTitle title={title}/>
                 {display === 'list' ? 
-                    <TrackList tracks={list} style='simplify'/>:
+                    <TrackList tracks={list} style='simplify' playContextTrack={playContextTrack}/>:
                     <ArtistRowGrid list={list}/>}
             </div>
         );

@@ -1,7 +1,6 @@
-import React, {useState, useReducer, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useImperativeHandle} from 'react';
 import axios from 'axios'
 import Heartbeat from 'react-heartbeat'
-import querystring from 'querystring'
 
 import ProgressBar from './ProgressBar'
 import NowPlaying from './NowPlaying'
@@ -10,8 +9,10 @@ import ControlButton from './ControlButton'
 import reqWithToken from '../utilities/reqWithToken'
 import msTimeFormat from '../utilities/utils'
 import putWithToken from '../utilities/putWithToken'
+import { MessageContext } from '../utilities/context';
 
-const Player = ({token}) => {
+const Player = React.forwardRef(({token}, ref) => {
+    const setMessage = useContext(MessageContext)
     const [playbackState, setPlaybackState] = useState({
         play: false,
         shuffle: false,
@@ -40,6 +41,7 @@ const Player = ({token}) => {
         const requestInfo = reqWithToken('https://api.spotify.com/v1/me/player', token, source)
         requestInfo()
             .then(response => {
+                // console.log(response.data)
                 const {repeat_state, shuffle_state, is_playing, progress_ms, item, device} = response.data
                 setPlayback(progress_ms/item.duration_ms)
                 setVolume(device.volume_percent/100)
@@ -49,6 +51,13 @@ const Player = ({token}) => {
             .catch(error => console.log(error))
     }
 
+    useImperativeHandle(ref, () =>({
+        updateState: () => {
+            setPlaybackState(state => ({...state, play:true}))
+            updateState()
+        }
+    }))
+
     const updatePlayback = () => {
         const interval = 500/playbackState.total_time
         setPlayback(playback => (playback + interval))
@@ -57,131 +66,135 @@ const Player = ({token}) => {
 
     const source = axios.CancelToken.source()
 
-
     const togglePlay = () => {
         if (playbackState.play){
-            const request = putState('pause', token, source)
+            const request = putWithToken('https://api.spotify.com/v1/me/player/pause', token, source)
             request()
                 .then(response => {
                     if (response.status === 204){
                         setPlaybackState(state => ({...state, play: false}))
                         updateState()
                     }else{
-                        console.log(response)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 }) 
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }else{
-            const request = putState('play', token, source)
+            const request = putWithToken('https://api.spotify.com/v1/me/player/play', token, source)
             request()
                 .then(response => {
                     if (response.status === 204){
                         setPlaybackState(state => ({...state, play: true}))
                         updateState()
                     }else{
-                        console.log(response)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 }) 
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }
         updateState()
     }
 
     const toggleShuffle = () => {
         if (playbackState.shuffle){
-            const request = putState('shuffleOff', token, source)
+            const request = putWithToken('https://api.spotify.com/v1/me/player/shuffle?state=false', token, source)
             request()
                 .then(response => {
                     if (response.status === 204){
                         setPlaybackState(state => ({...state, shuffle: false}))
                         updateState()
+                        setMessage('Shuffle Off')
                     }else{
-                        console.log(response)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 }) 
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }else{
-            const request = putState('shuffleOn', token, source)
+            const request = putWithToken('https://api.spotify.com/v1/me/player/shuffle?state=true', token, source)
             request()
                 .then(response => {
                     if (response.status === 204){
                         setPlaybackState(state => ({...state, shuffle: true}))
                         updateState()
+                        setMessage('Shuffle Off')
                     }else{
-                        console.log(response)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 }) 
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }
     }
 
     const toggleRepeat = () => {
         if (playbackState.repeat){
-            const request = putState('repeatOff', token, source)
+            const request = putWithToken('https://api.spotify.com/v1/me/player/repeat?state=off', token, source)
             request()
                 .then(response => {
                     if (response.status === 204){
                         setPlaybackState(state => ({...state, repeat: false}))
                         updateState()
+                        setMessage('Repeat Track Off')
                     }else{
-                        console.log(response)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 }) 
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }else{
-            const request = putState('repeatOn', token, source)
+            const request = putWithToken('https://api.spotify.com/v1/me/player/repeat?state=track', token, source)
             request()
                 .then(response => {
                     if (response.status === 204){
                         setPlaybackState(state => ({...state, repeat: true}))
+                        updateState()
+                        setMessage('Repeat Track On')
                     }else{
-                        console.log(response)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                     }
                 }) 
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }
         
     }
 
     const skipNext = () => {
-        const request = putState('next', token, source)
-        request()
-            .then(response => {
-                if (response.status === 204){
-                    console.log(response)
-                }else{
-                    console.log(response)
-                }
-            }) 
-            .catch(error => console.log(error))
-    }
-
-    const skipPrev = () => {
-        const request = putState('previous', token, source)
+        const request = putWithToken('https://api.spotify.com/v1/me/player/next', token, source, {}, 'POST')
         request()
             .then(response => {
                 if (response.status === 204){
                     updateState()
                 }else{
-                    console.log(response)
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
             }) 
-            .catch(error => console.log(error))
+            .catch(error => setMessage(`ERROR: ${error}`))
+    }
+
+    const skipPrev = () => {
+        const request = putWithToken('https://api.spotify.com/v1/me/player/previous', token, source, {}, 'POST')
+        request()
+            .then(response => {
+                if (response.status === 204){
+                    updateState()
+                }else{
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                }
+            }) 
+            .catch(error => setMessage(`ERROR: ${error}`))
     }
 
     const seekPlayback = (ratio) => {
         const time = Math.round(ratio * playbackState.total_time)
-        const request = putState('seek', token, source, null, null, time)
+        const request = putWithToken(`https://api.spotify.com/v1/me/player/seek?position_ms=${time}`, token, source, {})
         request()
             .then(response => {
                 if (response.status === 204){
                     setPlayback(ratio)
                     setPlaybackState(state => ({...state, progress_ms: time}))
                 }else{
-                    console.log(response)
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
             }) 
-            .catch(error => console.log(error))
+            .catch(error => setMessage(`ERROR: ${error}`))
         
         setScrubPb(null)
     }
@@ -193,22 +206,22 @@ const Player = ({token}) => {
 
     const seekVolume = (ratio) => {
         const integer = Math.round(ratio * 100)
-        const request = putState('volume', token, source, null, integer)
+        const request = putWithToken(`https://api.spotify.com/v1/me/player/volume?volume_percent=${integer}`, token, source, null)
         request()
             .then(response => {
                 if (response.status === 204){
                     setVolume(ratio)
                 }else{
-                    console.log(response)
+                    setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
             }) 
-            .catch(error => console.log(error))
+            .catch(error => setMessage(`ERROR: ${error}`))
     }
 
     return (
         <>
-        {/* {<Heartbeat heartbeatFunction={updateState} heartbeatInterval={playbackState.play ?2000:5000}/>}
-        {playbackState.play ? <Heartbeat heartbeatFunction={updatePlayback} heartbeatInterval={500}/>:null} */}
+        {<Heartbeat heartbeatFunction={updateState} heartbeatInterval={playbackState.play ?2000:5000}/>}
+        {playbackState.play ? <Heartbeat heartbeatFunction={updatePlayback} heartbeatInterval={500}/>:null}
         <div className='player'>
 
             <div className="player-left">
@@ -255,54 +268,6 @@ const Player = ({token}) => {
         </div>
         </>
     );
-}
-
-function putState(action, token, source, load={}, volume, time){
-    let request
-    switch(action){
-        case 'play':
-            request = putWithToken('https://api.spotify.com/v1/me/player/play', token, source, load)
-            return request
-
-        case 'pause':
-            request = putWithToken('https://api.spotify.com/v1/me/player/pause', token, source, load)
-            return request
-
-        case 'shuffleOn':
-            request = putWithToken('https://api.spotify.com/v1/me/player/shuffle?state=true', token, source, load)
-            return request
-
-        case 'shuffleOff':
-            request = putWithToken('https://api.spotify.com/v1/me/player/shuffle?state=false', token, source, load)
-            return request
-
-        case 'repeatOn':
-            request = putWithToken('https://api.spotify.com/v1/me/player/repeat?state=track', token, source, load)
-            return request
-
-        case 'repeatOff':
-            request = putWithToken('https://api.spotify.com/v1/me/player/repeat?state=off', token, source, load)
-            return request
-
-        case 'next':
-            request = putWithToken('https://api.spotify.com/v1/me/player/next', token, source, load, 'POST')
-            return request
-
-        case 'previous':
-            request = putWithToken('https://api.spotify.com/v1/me/player/previous', token, source, load, 'POST')
-            return request
-
-        case 'seek':
-            request = putWithToken(`https://api.spotify.com/v1/me/player/seek?position_ms=${time}`, token, source, load)
-            return request
-        
-        case 'volume':
-            request = putWithToken(`https://api.spotify.com/v1/me/player/volume?volume_percent=${volume}`, token, source, load)
-            return request
-
-        default:
-            return null
-    }
-}
+})
 
 export default Player;

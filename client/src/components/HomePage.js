@@ -1,11 +1,13 @@
 import React from 'react'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
 import getLocale from '../utilities/locale'
 
 import CollectionRow from './CollectionRow'
+import { MessageContext } from '../utilities/context'
 
 export default function HomePage() {
+    const setMessage = useContext(MessageContext)
     const [collections, setCollections] = useState([])
     const [temp, setTemp] = useState({})
     const [playlistsMap, setplaylistMap] = useState({})
@@ -18,7 +20,7 @@ export default function HomePage() {
             .then((data) => {
                 setCollections(data.categories.items)
             })
-            .catch((error) => console.log(error))
+            .catch((error) => setMessage(`ERROR: ${error}`))
         
         return () => source.cancel()
     }, [])
@@ -32,7 +34,7 @@ export default function HomePage() {
                     const playlists = data.playlists.items
                     setTemp(temp => ({[name]: {id, playlists}}))
                 })
-                .catch((error) => console.log(error))
+                .catch((error) => setMessage(`ERROR: ${error}`))
             return null
         })
     }, [collections])

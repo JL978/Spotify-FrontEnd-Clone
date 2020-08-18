@@ -1,8 +1,11 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Icon from './icons'
-import ArtistRowItem from './ArtistRowItem'
+
+import { MessageContext } from '../utilities/context';
+
 
 export default function NowPlaying({playInfo}) {
+    const setMessage = useContext(MessageContext)
     const {album, artists, name, id} = playInfo
 
     let imageUrl
@@ -38,7 +41,7 @@ export default function NowPlaying({playInfo}) {
             </div>
 
             <div className="player-like">
-                <button title='Save to your Liked Songs' className="player-like-button no-outline">
+                <button title='Save to your Liked Songs' className="player-like-button no-outline" onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}>
                     <Icon name='Heart' />
                 </button>
             </div>

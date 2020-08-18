@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Axios from 'axios';
 
 import Sidebar from './components/Sidebar.js'
@@ -17,7 +17,7 @@ import Featured from './components/Featured.js'
 
 import getHashParams from './utilities/getHashParams'
 import reqWithToken from './utilities/reqWithToken'
-import {UserContext, LoginContext, tokenContext, TokenContext} from './utilities/context'
+import {UserContext, LoginContext, TokenContext, MessageContext, PlayContext} from './utilities/context'
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -26,6 +26,11 @@ function App() {
   const [userInfo, setuserInfo] = useState({})
   const [playlists, setPlaylists] = useState([])
 
+  const [status, setStatus] = useState(false) 
+  const [message, setMessage] = useState('')
+
+  const timerRef = useRef(null)
+
   useEffect(() => {
     var params = getHashParams();
     const {access_token, error} = params
@@ -33,8 +38,7 @@ function App() {
     var cancelSource = Axios.CancelToken.source()
     if (error){
       setLoading(false)
-      //TODO: some form of popup to show that an error has occured
-      console.log(error)
+      setStatusMessage(`ERROR: ${error}`)
     }else{
       if (access_token) {
         setToken(access_token)
@@ -50,7 +54,7 @@ function App() {
             setuserInfo(_userInfo.data)
             setPlaylists(_playlists.data.items)
           }catch(error){
-            console.log(error)
+            setStatusMessage(`LOGIN ERROR: ${error}`)
           }
         }
         
@@ -75,17 +79,15 @@ function App() {
                 setPlaylists(_playlists.data.items)
 
               }catch(error){
-                console.log(error)
+                setStatusMessage(`ERROR: ${error}`)
               }
             }
             
             makeRequests()
-
-            //TODO: set loading to false and show the logged in version
             setLoading(false)
           })
           .catch((error) => {
-            //TODO: set loading to false and show the non-logged in version
+            setStatusMessage(`ERROR: ${error}`)
             setLoading(false)
             return
           })
@@ -93,6 +95,7 @@ function App() {
     }
     return (()=> {
       cancelSource.cancel()
+      clearTimeout(timerRef.current)
     })
   }, [])
 
@@ -104,40 +107,60 @@ function App() {
       .catch(error => console.log(error))
   }
 
+  const setStatusMessage = (message) => {
+      clearTimeout(timerRef.current)
+      setStatus(true)
+      setMessage(message)
+      timerRef.current = setTimeout(() => {
+          setStatus(false)
+      }, 3000)
+  }
+
+
+  const playerRef = useRef(null)
+  const updatePlayer = () => {
+    playerRef.current.updateState()
+  }
+
   return (
     <div className="App">
       {loading? 
         <Loading /> :
-        <LoginContext.Provider
-          value={loggedIn}>
-            
-            <Sidebar>
-              <Logo />
-              <NavList>
-                <NavItem to='/' exact={true} name='Home' label='Home' />
-                <NavItem to='/search' exact={true} name='Search' label='Search' />
-                <NavItem to='/collection' exact={false} name='Library' label='Your Library' data_tip='library' data_for='tooltip' data_event='click' style={{ pointerEvents: loggedIn? 'auto':'none'}}/>
-              </NavList>
-              <PlayLists 
-                top={<FeaturedPlaylist>
-                        <FeaturedItem label='Liked Songs' loggedIn={loggedIn}/>
-                      </FeaturedPlaylist>}
-                bottom={<OtherPlaylist playlists={playlists}/>}
-              />
-              {loggedIn? <InstallCTA /> : null}
-            </Sidebar>
+        <MessageContext.Provider value={setStatusMessage}>
+          <LoginContext.Provider
+            value={loggedIn}>
+              
+              <Sidebar>
+                <Logo />
+                <NavList>
+                  <NavItem to='/' exact={true} name='Home' label='Home' />
+                  <NavItem to='/search' exact={true} name='Search' label='Search' />
+                  <NavItem to='/collection' exact={false} name='Library' label='Your Library' data_tip='library' data_for='tooltip' data_event='click' style={{ pointerEvents: loggedIn? 'auto':'none'}}/>
+                </NavList>
+                <PlayLists 
+                  top={<FeaturedPlaylist>
+                          <FeaturedItem label='Liked Songs' loggedIn={loggedIn} />
+                        </FeaturedPlaylist>}
+                  bottom={<OtherPlaylist playlists={playlists}/>}
+                />
+                {loggedIn? <InstallCTA /> : null}
+              </Sidebar>
+              
+              <PlayContext.Provider value={updatePlayer}>
+                <TokenContext.Provider value={token}>
+                    <UserContext.Provider value={userInfo}>
+                      <Featured loggedIn={loggedIn} playlists={playlists} refreshPlaylist={() => refreshPlaylist()} message={message} status={status} />
+                    </UserContext.Provider>
+                </TokenContext.Provider>
+              </PlayContext.Provider>
 
-            <TokenContext.Provider value={token}>
-                <UserContext.Provider value={userInfo}>
-                  <Featured loggedIn={loggedIn} playlists={playlists} refreshPlaylist={() => refreshPlaylist()}/>
-                </UserContext.Provider>
-            </TokenContext.Provider>
+              <Footer>
+                {loggedIn? <Player token={token} ref={playerRef}/>: <CTAbanner/>}
+              </Footer>
+                  
+          </LoginContext.Provider>
 
-            <Footer>
-              {loggedIn? <Player token={token}/>: <CTAbanner/>}
-            </Footer>
-                
-        </LoginContext.Provider>
+        </MessageContext.Provider>
       }
     </div>
   );
