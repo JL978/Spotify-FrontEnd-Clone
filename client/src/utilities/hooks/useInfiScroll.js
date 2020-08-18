@@ -25,7 +25,7 @@ function useInfiScroll(setList){
                     })
                     .catch(error => console.log(error))
             }
-        })
+        }, {threshold: 0.75})
         if (node) observer.current.observe(node)
     // eslint-disable-next-line
     }, [next])

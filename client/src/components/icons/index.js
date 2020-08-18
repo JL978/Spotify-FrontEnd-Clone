@@ -33,7 +33,7 @@ export default function Icon(props) {
         case 'Create':
             return <Create />
         case 'Heart':
-            return <Heart />
+            return <Heart {...props}/>
         case 'Like':
             return <Like {...props}/>
         case 'Install':

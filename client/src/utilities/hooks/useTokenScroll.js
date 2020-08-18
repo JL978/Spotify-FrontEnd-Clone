@@ -10,15 +10,12 @@ function useTokenScroll(setList, token, source){
         if (observer.current) observer.current.disconnect()
         observer.current = new IntersectionObserver(entries => {
             if(entries[0].isIntersecting && next){
+                console.log('hi')
                 const makeRequest = reqWithToken(next, token, source)
                 makeRequest()
-                    .then(data => {
-                        let resultList
-                        if (data.items && data.items[0].track){
-                            resultList = data.items.map(track => track.track)
-                        }else{
-                            resultList = data.items || data.playlists.items
-                        }
+                    .then(response => {
+                        const data = response.data
+                        const resultList = data.items.map(track => track.track)
                         const next = data.next || data.playlists.next
                         setList(tracks => [...tracks, ...resultList])
                         setNext(next)

@@ -10,7 +10,7 @@ import TrackList from './TrackList'
 import useId from '../utilities/hooks/useId'
 import useInfiScroll from '../utilities/hooks/useInfiScroll'
 
-export default function AlbumPage() {
+export default function AlbumPage({setMessage}) {
     const id = useId()
 
     const highlight = useHighlight()
@@ -63,7 +63,7 @@ export default function AlbumPage() {
             <PageBanner pageTitle={bannerInfo.album_type} bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions />
+                <PlayListFunctions onFollow={() => setMessage('Oops looks like the Spotify API does not support following albums')} setMessage={setMessage}/>
                 <div className="page-content">
                     <TrackList ref={lastRef} tracks={tracks} highlight={highlight}/>
                 </div>

@@ -207,8 +207,8 @@ const Player = ({token}) => {
 
     return (
         <>
-        {<Heartbeat heartbeatFunction={updateState} heartbeatInterval={2000}/>}
-        {playbackState.play ? <Heartbeat heartbeatFunction={updatePlayback} heartbeatInterval={500}/>:null}
+        {/* {<Heartbeat heartbeatFunction={updateState} heartbeatInterval={playbackState.play ?2000:5000}/>}
+        {playbackState.play ? <Heartbeat heartbeatFunction={updatePlayback} heartbeatInterval={500}/>:null} */}
         <div className='player'>
 
             <div className="player-left">

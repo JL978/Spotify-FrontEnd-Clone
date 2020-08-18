@@ -6,7 +6,9 @@ const putWithToken = (endpoint, access_token, cancelSource, data, method='PUT') 
         const options = {
             url: endpoint,
             method,
-            headers: { 'Authorization': 'Bearer ' + access_token },
+            headers: { 
+                'Authorization': 'Bearer ' + access_token,
+                'Content-Type': 'application/json' },
             data,
             cancelToken
         };

@@ -1,17 +1,23 @@
 import React from 'react'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
+import axios from 'axios'
 
 import makeAxiosRequest from '../utilities/makeAxiosRequest'
 import getLocale from '../utilities/locale'
 import useId from '../utilities/hooks/useId'
+import reqWithToken from '../utilities/reqWithToken'
+import putWithToken from '../utilities/putWithToken'
+import {TokenContext, LoginContext} from '../utilities/context'
 
 import PageBanner from './PageBanner'
 import PlayListFunctions from './PlayListFunctions'
 import AboutMenu from './AboutMenu'
 
 
-export default function ArtistPage() {
+export default function ArtistPage({setMessage}) {
     const id = useId('artist')
+    const token = useContext(TokenContext)
+    const loggedIn = useContext(LoginContext)
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -31,7 +37,9 @@ export default function ArtistPage() {
     const [appear, setAppear] = useState([])
     const [compilation, setCompilation] = useState([])
     const [related, setRelated] = useState([])
+    const [follow, setFollow] = useState(false)
 
+    const source = axios.CancelToken.source()
     useEffect(() => {
         setTracks([])
         setAlbum([])
@@ -39,6 +47,7 @@ export default function ArtistPage() {
         setAppear([])
         setCompilation([])
         setRelated([])
+        setFollow(false)
         
         const [artistSource, requestArtist] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}`)
         const [tracksSource, requestTracks] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=${locale}`)
@@ -47,6 +56,16 @@ export default function ArtistPage() {
         const [appearSource, requestAppear] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=appears_on&country=${locale}`)
         const [compilationSource, requestCompilation] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=compilation&country=${locale}`)
         const [relatedSource, requestRelated] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/related-artists`)
+
+        if (loggedIn){
+            const requestFollow = reqWithToken(`https://api.spotify.com/v1/me/following/contains?type=artist&ids=${id}`, token, source)
+            requestFollow()
+                .then(response => {
+                    setFollow(response.data[0])
+                })
+                .catch(error => console.log(error))
+        }
+        
 
         const makeRequest = async ()=> {
             try{
@@ -57,7 +76,8 @@ export default function ArtistPage() {
                         appearData, 
                         compilationData,
                         relatedData] = await Promise.all([requestArtist(), requestTracks(), requestAlbum(), requestSingle(), requestAppear(), requestCompilation(), requestRelated()])
-
+                
+                
                 const {name, followers, primary_color, images} = artistData
                 setbannerInfo(bannerInfo => ({...bannerInfo, name, followers, primary_color, images}))
                 
@@ -67,8 +87,7 @@ export default function ArtistPage() {
                 const appear = appearData.items
                 const compilation = compilationData.items
                 const related = relatedData.artists
-
-
+                
                 setTracks((old) => [...old, ...tracks])
                 setAlbum((old) => [...old, ...album])
                 setSingle((old) => [...old, ...single])
@@ -91,16 +110,31 @@ export default function ArtistPage() {
             appearSource.cancel()
             compilationSource.cancel()
             relatedSource.cancel()
+            source.cancel()
         }
     }, [id])
 
+    const followArtist = () => {
+        if (loggedIn) {
+            const request = putWithToken(`https://api.spotify.com/v1/me/following?type=artist&ids=${id}`, token, source, {}, follow? 'DELETE':'PUT')
+            request()
+                .then(response => {
+                    if (response.status === 204){
+                        setFollow(!follow)
+                    }else{
+                        console.log(response)
+                    }
+                })
+                .catch(error => console.log(error))
+        }
+    }
 
     return (
         <div className='listPage' style={{display: tracks.length===0? 'none':'block'}}>
             <PageBanner pageTitle='artist' bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions type='artist'/>
+                <PlayListFunctions type='artist' follow={follow} onFollow={followArtist} setMessage={setMessage}/>
                 <div className="page-content">
                     <AboutMenu id={id} related = {related} tracks={tracks} album={album} single={single} appear={appear} compilation={compilation}/>
                 </div>

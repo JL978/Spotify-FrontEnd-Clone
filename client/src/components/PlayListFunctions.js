@@ -1,72 +1,100 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Icon from './icons'
 import ReactTooltip from 'react-tooltip'
+import {LoginContext} from '../utilities/context'
 
-export default function PlayListFunctions({type}) {
-    return (
-        <div className="playListFunctions">
-            {switchType(type)}
-            
-        </div>
-    )
-}
+export default function PlayListFunctions({type, follow, onFollow, setMessage}) {
+    const loggedIn = useContext(LoginContext)
 
-
-function switchType(type){
     switch (type) {
         case 'playOnly':
-            return <PlayButtonLarge/>
+            return (
+                <div className="playListFunctions">
+                    <PlayButtonLarge loggedIn={loggedIn}/>
+                </div>
+            )
+        case 'none':
+            return (
+                <div className="playListFunctions">
+                    <MoreButton onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}/>
+                </div>
+            )
         case 'user':
             return (
-                <>
-                    <FollowButton />
-                    <MoreButton />
-                </>
+                <div className="playListFunctions">
+                    <FollowButton follow={follow} onFollow={onFollow} loggedIn={loggedIn}/>
+                    <MoreButton onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}/>
+                </div>
+                    
             )
         case 'artist':
             return (
-                <>
-                    <PlayButtonLarge />
-                    <FollowButton />
-                    <MoreButton />
-                </>
+                <div className="playListFunctions">
+                    <PlayButtonLarge loggedIn={loggedIn}/>
+                    <FollowButton follow={follow} onFollow={onFollow} loggedIn={loggedIn}/>
+                    <MoreButton onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}/>
+                </div>
             )
         default:
             return (
-                <>
-                    <PlayButtonLarge />
-                    <LikeButton />
-                    <MoreButton />
-                </>
+                <div className="playListFunctions">
+                    <PlayButtonLarge loggedIn={loggedIn}/>
+                    <LikeButton follow={follow} onFollow={onFollow} loggedIn={loggedIn}/>
+                    <MoreButton onClick={() => setMessage('Oops, it look like I chose not to implement this feature :)')}/>
+                </div>
             )
     }
 }
 
 
-function PlayButtonLarge(){
-    return (
-        <button className="playButton no-outline" title="Play" data-tip='play' data-for='tooltipMain' data-event='click' >
-            <Icon name="Play" height='28' width='28'/>
-        </button>
-    )
+function PlayButtonLarge({loggedIn}){
+    if (loggedIn){
+        return (
+            <button className="playButton no-outline" title="Play" >
+                <Icon name="Play" height='28' width='28'/>
+            </button>
+        )
+    }else{
+        return (
+            <button className="playButton no-outline" title="Play" data-tip='play' data-for='tooltipMain' data-event='click' >
+                <Icon name="Play" height='28' width='28'/>
+            </button>
+        )
+    }
+    
 }
 
-function LikeButton(){
-    return (
-        <button className="likeButton no-outline" title="Save to Your Library" data-tip='like' data-for='tooltipMain' data-event='click' >
-            <Icon name='Heart'/>
-        </button>
-    )
+function LikeButton({follow, onFollow, loggedIn}){
+    if (loggedIn){
+        return (
+            <button className={`likeButton ${follow? 'noHover':''} no-outline`} style={{color: follow? 'var(--spotify-green)':null}} title={follow? 'Remove from Library':"Save to Your Library"} onClick={onFollow}>
+                <Icon name='Heart' fill={follow}/>
+            </button>
+        )
+    }else{
+        return (
+            <button className="likeButton no-outline" title="Save to Your Library" data-tip='like' data-for='tooltipMain' data-event='click'>
+                <Icon name='Heart' fill={follow}/>
+            </button>
+        )
+    }
 }
 
-function FollowButton(){
-    return (
-        <button className="followButton no-outline" data-tip='follow' data-for='tooltipMain' data-event='click'>follow</button>
-    )
+function FollowButton({follow, onFollow, loggedIn}){
+    if (loggedIn){
+        return (
+            <button className="followButton no-outline" onClick={onFollow}>{follow? 'following':'follow'}</button>
+        )
+    }else{
+        return (
+            <button className="followButton no-outline" data-tip='follow' data-for='tooltipMain' data-event='click' onClick={() => console.log('hi')}>{follow? 'following':'follow'}</button>
+        )
+    }
+    
 }
 
-function MoreButton(){
+function MoreButton({onClick}){
     return (
-        <button className="moreButton no-outline" title="More">• • •</button>
+        <button className="moreButton no-outline" title="More" onClick={onClick}>• • •</button>
     )
 }

@@ -96,6 +96,14 @@ function App() {
     })
   }, [])
 
+  const refreshPlaylist= () =>{
+    const source = Axios.CancelToken.source()
+    const requestPlayList = reqWithToken(`https://api.spotify.com/v1/me/playlists`, token, source)
+    requestPlayList()
+      .then(response => setPlaylists(response.data.items))
+      .catch(error => console.log(error))
+  }
+
   return (
     <div className="App">
       {loading? 
@@ -121,7 +129,7 @@ function App() {
 
             <TokenContext.Provider value={token}>
                 <UserContext.Provider value={userInfo}>
-                  <Featured loggedIn={loggedIn} playlists={playlists}/>
+                  <Featured loggedIn={loggedIn} playlists={playlists} refreshPlaylist={() => refreshPlaylist()}/>
                 </UserContext.Provider>
             </TokenContext.Provider>
 

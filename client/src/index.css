@@ -672,8 +672,38 @@ body{
 .featured{
     background: #121212;
     overflow-y: scroll;
+    position: relative;
 }
 
+.status-bar-wrapper{
+    position: fixed;
+    top: calc(100vh - var(--player-height) - 55px);
+    display: flex;
+    justify-content: center;
+    z-index: 999;
+    width: calc(100vw - 232px);
+    transition: all .5s cubic-bezier(.3,0,.4,1);
+    opacity: 0;
+    visibility: hidden;
+}
+.status-bar{
+    /* left: 50%; */
+    background-color: #2e77d0;
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px 36px;
+    font-size: 16px;
+    box-shadow: 0 4px 12px 4px rgba(0,0,0,.5);
+    line-height: 20px;
+    text-align: center;
+    margin: 0;
+    
+}
+
+.status-bar-wrapper.active{
+    opacity: 1;
+    visibility: visible;
+}
 
 .header-bar{
     width: 100%;
@@ -1260,7 +1290,7 @@ body{
     color: hsla(0,0%,100%,.7);
 }
 
-.likeButton:hover{
+.likeButton:not(.noHover):hover{
     color: #fff
 }
 
