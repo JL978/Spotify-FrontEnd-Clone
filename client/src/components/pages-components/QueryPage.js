@@ -1,5 +1,5 @@
 import React from 'react'
-import SearchRow from './SearchRow'
+import SearchRow from '../featured-components/SearchRow'
 
 export default function QueryPage({query}) {
     return (

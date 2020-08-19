@@ -1,5 +1,5 @@
 import React from 'react'
-import Icon from './icons'
+import Icon from '../icons'
 
 export default function PageBanner({pageTitle, bannerInfo}) {
     const {name, description, user, followers, primary_color, images, release_date, total} = bannerInfo

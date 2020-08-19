@@ -2,23 +2,25 @@ import React from 'react'
 import {useState, useEffect, useContext} from 'react'
 import axios from 'axios'
 
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
-import getLocale from '../utilities/locale'
-import useId from '../utilities/hooks/useId'
-import reqWithToken from '../utilities/reqWithToken'
-import putWithToken from '../utilities/putWithToken'
-import {TokenContext, LoginContext, MessageContext} from '../utilities/context'
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
+import getLocale from '../../utilities/locale'
+import useId from '../../utilities/hooks/useId'
+import reqWithToken from '../../utilities/reqWithToken'
+import putWithToken from '../../utilities/putWithToken'
+import {TokenContext, LoginContext, MessageContext, PlayContext} from '../../utilities/context'
 
-import PageBanner from './PageBanner'
-import PlayListFunctions from './PlayListFunctions'
-import AboutMenu from './AboutMenu'
-
+import PageBanner from '../featured-components/PageBanner'
+import PlayListFunctions from '../featured-components/PlayListFunctions'
+import AboutMenu from '../featured-components/AboutMenu'
+import Loading from '../featured-components/Loading'
 
 export default function ArtistPage() {
     const id = useId('artist')
     const token = useContext(TokenContext)
     const loggedIn = useContext(LoginContext)
     const setMessage = useContext(MessageContext)
+    const [loading, setLoading] = useState(true)
+    const setPlay = useContext(PlayContext)
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -51,6 +53,7 @@ export default function ArtistPage() {
         setRelated([])
         setFollow(false)
         setUri('')
+        setLoading(true)
         
         const [artistSource, requestArtist] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}`)
         const [tracksSource, requestTracks] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=${locale}`)
@@ -60,7 +63,7 @@ export default function ArtistPage() {
         const [compilationSource, requestCompilation] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/albums?include_groups=compilation&country=${locale}`)
         const [relatedSource, requestRelated] = makeAxiosRequest(`https://api.spotify.com/v1/artists/${id}/related-artists`)
 
-        if (loggedIn){
+        if (loggedIn && id){
             const requestFollow = reqWithToken(`https://api.spotify.com/v1/me/following/contains?type=artist&ids=${id}`, token, source)
             requestFollow()
                 .then(response => {
@@ -98,14 +101,16 @@ export default function ArtistPage() {
                 setAppear((old) => [...old, ...appear])
                 setCompilation((old) => [...old, ...compilation])
                 setRelated(old => [...old, ...related])
-
+                setLoading(false)
             }catch(error){ 
                 console.log(error)
+                setLoading(false)
             }   
         }
 
-        makeRequest()
-
+        if (id){
+            makeRequest()
+        }
         return () => {
             artistSource.cancel()
             tracksSource.cancel()
@@ -116,6 +121,7 @@ export default function ArtistPage() {
             relatedSource.cancel()
             source.cancel()
         }
+    // eslint-disable-next-line
     }, [id])
 
     const followArtist = () => {
@@ -146,7 +152,7 @@ export default function ArtistPage() {
         request()
             .then(response => {
                 if (response.status === 204){
-                    //TODO: setPlay
+                    setTimeout(() => setPlay(), 500)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -162,7 +168,7 @@ export default function ArtistPage() {
         request()
             .then(response => {
                 if (response.status === 204){
-                    //TODO: setPlay
+                    setTimeout(() => setPlay(), 500)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -171,16 +177,19 @@ export default function ArtistPage() {
     }
 
     return (
-        <div className='listPage' style={{display: tracks.length===0? 'none':'block'}}>
-            <PageBanner pageTitle='artist' bannerInfo={bannerInfo}/>
-            <div className="playListContent">
-                <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions type='artist' follow={follow} onFollow={followArtist} setMessage={setMessage} playContext={playContext}/>
-                <div className="page-content">
-                    <AboutMenu id={id} related = {related} tracks={tracks} album={album} single={single} appear={appear} compilation={compilation} playContextTrack={playContextTrack}/>
+        loading ? 
+            <Loading /> 
+            : 
+            <div className='listPage' style={{display: tracks.length===0? 'none':'block'}}>
+                <PageBanner pageTitle='artist' bannerInfo={bannerInfo}/>
+                <div className="playListContent">
+                    <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
+                    <PlayListFunctions type='artist' follow={follow} onFollow={followArtist} setMessage={setMessage} playContext={playContext}/>
+                    <div className="page-content">
+                        <AboutMenu id={id} related = {related} tracks={tracks} album={album} single={single} appear={appear} compilation={compilation} playContextTrack={playContextTrack}/>
+                    </div>
                 </div>
             </div>
-        </div>
     )
 }
 

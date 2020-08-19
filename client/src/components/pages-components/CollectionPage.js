@@ -2,11 +2,10 @@ import React, {useState, useEffect, useContext} from 'react';
 import {Route} from 'react-router-dom'
 import axios from 'axios'
 
-import CollectionRow from './CollectionRow'
-import Icon from './icons'
+import CollectionRow from '../featured-components/CollectionRow'
 
-import {TokenContext} from '../utilities/context'
-import reqWithToken from '../utilities/reqWithToken'
+import {TokenContext} from '../../utilities/context'
+import reqWithToken from '../../utilities/reqWithToken'
 
 const CollectionPage = ({playlists}) => {
     const [artists, setArtists] = useState([])
@@ -31,6 +30,7 @@ const CollectionPage = ({playlists}) => {
 
             return () => cancelSource.cancel()
         }
+    // eslint-disable-next-line
     }, [])
 
     return (
@@ -48,13 +48,5 @@ const CollectionPage = ({playlists}) => {
     );
 }
 
-function List(){
-    return(
-        <div className='noList'>
-            <h1></h1>
-            <h2></h2>
-        </div>
-    )
-}
 
 export default CollectionPage;

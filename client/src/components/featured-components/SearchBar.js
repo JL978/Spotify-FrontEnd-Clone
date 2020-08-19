@@ -1,7 +1,5 @@
-import React from 'react'
-import Icon from './icons'
-
-import {useEffect} from 'react'
+import React, {useEffect} from 'react'
+import Icon from '../icons'
 
 export default function SearchBar({query, setQuery, resetQuery}) {
     useEffect(() => {

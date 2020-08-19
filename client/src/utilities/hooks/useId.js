@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {useLocation} from 'react-router-dom'
 
 function useId(page) {
-    const [id, setId] = useState('')
+    const [id, setId] = useState(null)
     const location = useLocation()
 
     useEffect(() => {

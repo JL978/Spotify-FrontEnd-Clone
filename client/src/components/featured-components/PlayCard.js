@@ -1,18 +1,19 @@
 import React, {useContext} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useHistory, Link} from 'react-router-dom'
 import axios from 'axios'
+
 import CardInfo from './CardInfo'
 import CardDisplay from './CardDisplay'
-import {Link} from 'react-router-dom'
-import Icon from './icons'
+import Icon from '../icons'
 
-import putWithToken from '../utilities/putWithToken'
-import {TokenContext, LoginContext, PlayContext} from '../utilities/context'
+import putWithToken from '../../utilities/putWithToken'
+import {TokenContext, LoginContext, PlayContext, MessageContext} from '../../utilities/context'
 
 const PlayCard = React.forwardRef(({info, type}, ref) => {
     const history = useHistory()
     const description = returnDescription(type, info)
     const {name, id, uri} = info
+    const setMessage = useContext(MessageContext)
 
     const token = useContext(TokenContext)
     const loggedIn = useContext(LoginContext)
@@ -47,9 +48,13 @@ const PlayCard = React.forwardRef(({info, type}, ref) => {
             const request = putWithToken(`https://api.spotify.com/v1/me/player/play`, token, source, body)
             request()
                 .then(response => {
-                    console.log(response)
+                    if (response.status === 204){
+                        setTimeout(() => updatePlayer(), 1000)
+                    }else{
+                        setMessage(`ERROR: ${response}`)
+                    }
                 })
-                .catch(error => console.log(error))
+                .catch(error => setMessage(`ERROR: ${error}`))
         }else{
             history.push(`/tracks`)
         }

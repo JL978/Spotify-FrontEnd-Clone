@@ -1,33 +1,33 @@
 import React, {useContext} from 'react'
-import Icon from './icons'
-import msTimeFormat from '../utilities/utils'
-import {PlayContext} from '../utilities/context'
+import Icon from '../icons'
+import msTimeFormat from '../../utilities/utils'
+import {PlayContext} from '../../utilities/context'
 
-const TrackListItem = React.forwardRef(({track, style, highlight, playContextTrack}, ref)  => {
+const TrackListItem = React.forwardRef(({track, styleName, highlight, playContextTrack}, ref)  => {
     const {album, artists, name, explicit, duration_ms, uri} = track
     const updatePlayer = useContext(PlayContext)
 
     let thumbNail 
-    if (style === 'simplify' && album.images.length > 0){
+    if (styleName === 'simplify' && album.images.length > 0){
         thumbNail = album.images[album.images.length-1].url
     }
     const formattedTime = msTimeFormat(duration_ms)
     return (
         <li ref={ref} className={`trackListItem ${highlight? 'highlight':null}`}>
         
-            <div className="trackItemPlay" style={style === 'simplify' ? simplyStyle:null}>
-                <button className={style === 'simplify'? "hoverIcon no-outline":"hoverIcon trackTopAlign no-outline"} onClick={() => {
+            <div className="trackItemPlay" style={styleName === 'simplify' ? simplyStyle:null}>
+                <button className={styleName === 'simplify'? "hoverIcon no-outline":"hoverIcon trackTopAlign no-outline"} onClick={() => {
                     playContextTrack(uri)
                     updatePlayer()
                 }}>
                     <Icon name='Play' height='20' width='20'/>
                 </button>
-                <div className={style ==='simplify'? "itemIcon":"itemIcon trackTopAlign"} style={{marginTop: style === 'simplify' ? '0':null}}>
+                <div className={styleName ==='simplify'? "itemIcon":"itemIcon trackTopAlign"} style={{marginTop: styleName === 'simplify' ? '0':null}}>
                     <Icon name='Music'/>
                 </div>
             </div>
 
-            {style === 'simplify' && 
+            {styleName === 'simplify' && 
                 <div className="trackMidAlign">
                     <div className='trackItemThumb'>
                         {thumbNail? 
@@ -40,11 +40,11 @@ const TrackListItem = React.forwardRef(({track, style, highlight, playContextTra
                 </div>}
 
             <div className="trackItemInfo">
-                <div className={style === 'simplify'? "trackMidAlign": "trackTopAlign"}>
+                <div className={styleName === 'simplify'? "trackMidAlign": "trackTopAlign"}>
 
                     <div className="trackName ellipsis-one-line">{name}</div>
 
-                    {style !== 'simplify' && 
+                    {styleName !== 'simplify' && 
                     <div className="trackInfo">
                         <span className='explicit-label' style={explicit? {display:'flex'}:{display:'none'}}>E</span>
                         <span className="trackArtists ellipsis-one-line">
@@ -66,7 +66,7 @@ const TrackListItem = React.forwardRef(({track, style, highlight, playContextTra
             </div>
 
             <div className="trackItemDuration">
-                <div className={`duration ${style ==='simplify' ? 'trackMidAlign': 'trackTopAlign'}`}>
+                <div className={`duration ${styleName ==='simplify' ? 'trackMidAlign': 'trackTopAlign'}`}>
                     <span>{formattedTime}</span>
                 </div>
             </div>

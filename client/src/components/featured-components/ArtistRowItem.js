@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from './icons'
+import Icon from '../icons'
 
 const ArtistRowItem = ({info}) => {
     const {name, type, id, images} = info 

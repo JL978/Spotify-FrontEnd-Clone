@@ -1,22 +1,25 @@
-import React from 'react'
-import {useEffect, useState, useContext} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
-import {TokenContext, LoginContext, MessageContext} from '../utilities/context'
 
-import PageBanner from './PageBanner'
-import PlayListFunctions from './PlayListFunctions'
-import TrackList from './TrackList'
+import PageBanner from '../featured-components/PageBanner'
+import PlayListFunctions from '../featured-components/PlayListFunctions'
+import TrackList from '../featured-components/TrackList'
+import Loading from '../featured-components/Loading'
 
-import useId from '../utilities/hooks/useId'
-import useInfiScroll from '../utilities/hooks/useInfiScroll'
-import putWithToken from '../utilities/putWithToken'
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
+import {TokenContext, LoginContext, MessageContext, PlayContext} from '../../utilities/context'
+import useId from '../../utilities/hooks/useId'
+import useInfiScroll from '../../utilities/hooks/useInfiScroll'
+import putWithToken from '../../utilities/putWithToken'
 
 export default function PlayListPage({playlists, refreshPlaylist}) {
     const id = useId('playlist')
     const loggedIn = useContext(LoginContext)
     const token = useContext(TokenContext)
     const setMessage = useContext(MessageContext)
+    const updatePlayer = useContext(PlayContext)
+
+    const [loading, setLoading] = useState(true)
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -44,20 +47,28 @@ export default function PlayListPage({playlists, refreshPlaylist}) {
             images: [], 
         })
         setTracks([])
+        setLoading(true)
 
         const [playSource, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/playlists/${id}`)
 
-        makeRequest()
+        if (id){
+            makeRequest()
             .then((data) => {
                 const {name, description, owner, followers, primary_color, tracks, images, uri} = data
                 setbannerInfo(bannerInfo => ({...bannerInfo, name, description, user:[owner], followers, primary_color, images}))
                 setTracks(tracks.items.map((track) => track.track))
                 setNext(tracks.next)
                 setUri(uri)
+                setLoading(false)
             })
-            .catch((error) => console.log(error))
+            .catch((error) => {
+                setLoading(false)
+                setMessage(`ERROR: ${error}`)
+            })
+        }
         
-        if (loggedIn){
+        
+        if (loggedIn && id){
             const playlistIds = playlists.map((playlist) => {
                 return playlist.id
             })
@@ -70,7 +81,8 @@ export default function PlayListPage({playlists, refreshPlaylist}) {
             playSource.cancel()
             source.cancel()
         }
-    }, [id])
+    // eslint-disable-next-line
+    }, [id, loggedIn])
 
     const followPlaylist = () => {
         const followReq = putWithToken(`https://api.spotify.com/v1/playlists/${id}/followers`, token, source, {}, like?'DELETE':'PUT')
@@ -83,7 +95,7 @@ export default function PlayListPage({playlists, refreshPlaylist}) {
                         setMessage('Added to your Library')
                     }
                     setLike(!like)
-                    refreshPlaylist()
+                    setTimeout(() => refreshPlaylist(), 1000)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -99,7 +111,7 @@ export default function PlayListPage({playlists, refreshPlaylist}) {
         request()
             .then(response => {
                 if (response.status === 204){
-                    //TODO: setPlay
+                    setTimeout(() => updatePlayer(), 500)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -116,7 +128,7 @@ export default function PlayListPage({playlists, refreshPlaylist}) {
         request()
             .then(response => {
                 if (response.status === 204){
-                    //TODO: setPlay
+                    setTimeout(() => updatePlayer(), 500)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -125,6 +137,9 @@ export default function PlayListPage({playlists, refreshPlaylist}) {
     }
 
     return (
+        loading? 
+        <Loading />
+        : 
         <div className='listPage' style={{display: `${tracks.length===0? 'none':'block'}`}}>
             <PageBanner pageTitle='playlist' bannerInfo={bannerInfo}/>
             <div className="playListContent">

@@ -52,8 +52,6 @@ export default function Icon(props) {
             return <Music2 />
         case 'CD':
             return <CD />
-        case 'CD':
-            return <CD />
         case 'TrackBack':
             return <TrackBack />
         case 'TrackNext':

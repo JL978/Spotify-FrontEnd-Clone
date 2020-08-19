@@ -1,5 +1,5 @@
 import React from 'react'
-import Icon from './icons'
+import Icon from '../icons'
 
 export default function NavButton({property}) {
     return (

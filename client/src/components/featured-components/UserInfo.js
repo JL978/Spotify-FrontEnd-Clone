@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import axios from 'axios'
 
-import {UserContext} from '../utilities/context'
+import {UserContext} from '../../utilities/context'
 
 const UserInfo = () => {
     const [open, setOpen] = useState(false)
@@ -30,7 +30,7 @@ const UserInfo = () => {
         <div style={divStyle}>
             <button className='UserInfoButton no-outline' onClick={toggleOpen}>
                 <figure style={figureStyle}>
-                    <img loading='eager' src={imgSrc} style={imgStyle}></img>
+                    <img loading='eager' src={imgSrc} style={imgStyle} alt=''></img>
                 </figure>
                 <span className='UserInfoSpan mediaNoneXL'>
                     {display_name}
@@ -41,7 +41,7 @@ const UserInfo = () => {
             </button>
             <ul className='UserInfoOptions' style={{display: open?'block':'none'}}>
                 <li>
-                    <a href="https://www.spotify.com/account/?utm_source=play&amp;utm_campaign=wwwredirect" target="_blank">Account</a>
+                    <a href="https://www.spotify.com/account/?utm_source=play&amp;utm_campaign=wwwredirect" target="_blank" rel="noopener noreferrer">Account</a>
                 </li>
                 <li>
                     <a href={`/user/${id}`}>Profile</a>

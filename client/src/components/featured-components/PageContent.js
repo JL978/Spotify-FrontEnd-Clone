@@ -1,19 +1,19 @@
-import React, {useContext, useState, useRef, useEffect} from 'react'
+import React, {useContext} from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 
-import HomePage from './HomePage'
-import SearchPage from './SearchPage'
-import GenrePage from './GenrePage'
-import PlayListPage from './PlayListPage'
-import AlbumPage from './AlbumPage'
-import UserPage from './UserPage'
-import ArtistPage from './ArtistPage'
-import CollectionPage from './CollectionPage'
-import LikePage from './LikePage'
+import HomePage from '../pages-components/HomePage'
+import SearchPage from '../pages-components/SearchPage'
+import GenrePage from '../pages-components/GenrePage'
+import PlayListPage from '../pages-components/PlayListPage'
+import AlbumPage from '../pages-components/AlbumPage'
+import UserPage from '../pages-components/UserPage'
+import ArtistPage from '../pages-components/ArtistPage'
+import CollectionPage from '../pages-components/CollectionPage'
+import LikePage from '../pages-components/LikePage'
 
 import ReactToolTip from 'react-tooltip'
-import generateContent from '../utilities/TipContent'
-import {LoginContext, MessageContext} from '../utilities/context'
+import generateContent from '../../utilities/TipContent'
+import {LoginContext} from '../../utilities/context'
 
 export default function PageContent({query, playlists, refreshPlaylist, message, status}) {
     const loggedIn = useContext(LoginContext)

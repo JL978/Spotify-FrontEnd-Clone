@@ -9,7 +9,7 @@ const ArtistRow = ({title, display, list, playContextTrack}) => {
             <div>
                 <ArtistRowTitle title={title}/>
                 {display === 'list' ? 
-                    <TrackList tracks={list} style='simplify' playContextTrack={playContextTrack}/>:
+                    <TrackList tracks={list} styleName='simplify' playContextTrack={playContextTrack}/>:
                     <ArtistRowGrid list={list}/>}
             </div>
         );

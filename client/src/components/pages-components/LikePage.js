@@ -2,14 +2,14 @@ import React from 'react';
 import {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
 
-import PageBanner from './PageBanner'
-import PlayListFunctions from './PlayListFunctions'
-import TrackList from './TrackList'
+import PageBanner from '../featured-components/PageBanner'
+import PlayListFunctions from '../featured-components/PlayListFunctions'
+import TrackList from '../featured-components/TrackList'
 
-import {TokenContext, UserContext} from '../utilities/context'
-import useTokenScroll from '../utilities/hooks/useTokenScroll'
-import reqWithToken from '../utilities/reqWithToken'
-import putWithToken from '../utilities/putWithToken'
+import {TokenContext, UserContext} from '../../utilities/context'
+import useTokenScroll from '../../utilities/hooks/useTokenScroll'
+import reqWithToken from '../../utilities/reqWithToken'
+import putWithToken from '../../utilities/putWithToken'
 
 
 const LikePage = () => {
@@ -28,13 +28,11 @@ const LikePage = () => {
     const source = axios.CancelToken.source()
     const [setNext, lastRef] = useTokenScroll(setTracks, token, source)
 
-    //using the id to get the playlist's info
     useEffect(() => {
         const requestPlaylist = reqWithToken('https://api.spotify.com/v1/me/tracks?limit=50', token, source)
 
         requestPlaylist()
             .then((data) => {
-                console.log(data)
                 const _tracks = data.data.items
                 setTracks(tracks => [...tracks, ..._tracks.map((track) => track.track)])
                 setNext(data.data.next)
@@ -42,6 +40,7 @@ const LikePage = () => {
             .catch((error) => console.log(error))
         
         return () => source.cancel()
+    // eslint-disable-next-line
     }, [])
 
     const playTracks = (trackUri) => {

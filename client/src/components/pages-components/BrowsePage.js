@@ -1,9 +1,9 @@
-import React from 'react'
-import {useState, useEffect} from 'react'
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
+import React, {useState, useEffect} from 'react'
 
-import BrowseCard from './BrowseCard'
-import PageTitle from './PageTitle'
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
+
+import BrowseCard from '../featured-components/BrowseCard'
+import PageTitle from '../featured-components/PageTitle'
 
 export default function BrowsePage() {
     const [genre, setGenre] = useState([])

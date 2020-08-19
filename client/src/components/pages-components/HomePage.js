@@ -1,10 +1,11 @@
-import React from 'react'
-import {useState, useEffect, useContext} from 'react'
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
-import getLocale from '../utilities/locale'
+import React, {useState, useEffect, useContext} from 'react'
 
-import CollectionRow from './CollectionRow'
-import { MessageContext } from '../utilities/context'
+import CollectionRow from '../featured-components/CollectionRow'
+
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
+import getLocale from '../../utilities/locale'
+import { MessageContext } from '../../utilities/context'
+
 
 export default function HomePage() {
     const setMessage = useContext(MessageContext)
@@ -23,6 +24,7 @@ export default function HomePage() {
             .catch((error) => setMessage(`ERROR: ${error}`))
         
         return () => source.cancel()
+    // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
@@ -37,11 +39,13 @@ export default function HomePage() {
                 .catch((error) => setMessage(`ERROR: ${error}`))
             return null
         })
+    // eslint-disable-next-line
     }, [collections])
 
 
     useEffect(() => {
         setplaylistMap(playlistsMap => ({...playlistsMap, ...temp}))
+    // eslint-disable-next-line
     }, [temp])
 
     return (

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Axios from 'axios';
 
-import Sidebar from './components/Sidebar.js'
+import Sidebar from './components/sidebar-components/Sidebar.js'
 import Logo from './components/sidebar-components/Logo.js'
 import NavList from './components/sidebar-components/NavList.js'
 import NavItem from './components/sidebar-components/NavItem.js'
@@ -10,10 +10,12 @@ import FeaturedPlaylist from './components/sidebar-components/FeaturedPlaylist.j
 import FeaturedItem from './components/sidebar-components/FeaturedItem.js'
 import OtherPlaylist from './components/sidebar-components/OtherPlaylist.js'
 import InstallCTA from './components/sidebar-components/InstallCTA.js'
-import Footer from './components/Footer.js'
-import CTAbanner from './components/CTAbanner'
-import Player from './components/Player'
-import Featured from './components/Featured.js'
+import Footer from './components/footer-components/Footer.js'
+import CTAbanner from './components/footer-components/CTAbanner'
+import Player from './components/footer-components/Player'
+import Featured from './components/featured-components/Featured.js'
+import Loading from './components/featured-components/Loading.js'
+
 
 import getHashParams from './utilities/getHashParams'
 import reqWithToken from './utilities/reqWithToken'
@@ -79,7 +81,7 @@ function App() {
                 setPlaylists(_playlists.data.items)
 
               }catch(error){
-                setStatusMessage(`ERROR: ${error}`)
+                console.log(error)
               }
             }
             
@@ -87,7 +89,7 @@ function App() {
             setLoading(false)
           })
           .catch((error) => {
-            setStatusMessage(`ERROR: ${error}`)
+            console.log(error)
             setLoading(false)
             return
           })
@@ -125,7 +127,7 @@ function App() {
   return (
     <div className="App">
       {loading? 
-        <Loading /> :
+        <Loading type='app'/> :
         <MessageContext.Provider value={setStatusMessage}>
           <LoginContext.Provider
             value={loggedIn}>
@@ -166,10 +168,6 @@ function App() {
   );
 }
 
-function Loading(){
-  return (
-    <h1>Loading...</h1>
-  )
-}
+
 
 export default App;

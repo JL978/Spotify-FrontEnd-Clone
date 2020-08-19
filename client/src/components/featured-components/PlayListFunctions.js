@@ -1,7 +1,6 @@
 import React, {useContext} from 'react'
-import Icon from './icons'
-import ReactTooltip from 'react-tooltip'
-import {LoginContext, PlayContext} from '../utilities/context'
+import Icon from '../icons'
+import {LoginContext, PlayContext} from '../../utilities/context'
 
 export default function PlayListFunctions({type, follow, onFollow, setMessage, playContext}) {
     const loggedIn = useContext(LoginContext)
@@ -53,7 +52,7 @@ function PlayButtonLarge({loggedIn, playContext}){
         return (
             <button className="playButton no-outline" title="Play" onClick={() => {
                 playContext()
-                updatePlayer()
+                setTimeout(() => updatePlayer(), 500)
             }}>
                 <Icon name="Play" height='28' width='28'/>
             </button>

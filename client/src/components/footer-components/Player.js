@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useImperativeHandle} from 'react';
+import React, {useState, useEffect, useContext, useImperativeHandle, useRef} from 'react';
 import axios from 'axios'
 import Heartbeat from 'react-heartbeat'
 
@@ -6,10 +6,11 @@ import ProgressBar from './ProgressBar'
 import NowPlaying from './NowPlaying'
 import ConnectDevices from './ConnectDevices'
 import ControlButton from './ControlButton'
-import reqWithToken from '../utilities/reqWithToken'
-import msTimeFormat from '../utilities/utils'
-import putWithToken from '../utilities/putWithToken'
-import { MessageContext } from '../utilities/context';
+
+import reqWithToken from '../../utilities/reqWithToken'
+import msTimeFormat from '../../utilities/utils'
+import putWithToken from '../../utilities/putWithToken'
+import { MessageContext } from '../../utilities/context';
 
 const Player = React.forwardRef(({token}, ref) => {
     const setMessage = useContext(MessageContext)
@@ -24,7 +25,7 @@ const Player = React.forwardRef(({token}, ref) => {
     const [scrubPb, setScrubPb] = useState(null)
     const [playback, setPlayback] = useState(0)
     const [volume, setVolume] = useState(1)
-    const [connectTip, setConnectTip] = useState(true)
+    const [connectTip, setConnectTip] = useState(false)
     const [playInfo, setPlayInfo] = useState({
         album: {}, 
         artists: [], 
@@ -32,21 +33,43 @@ const Player = React.forwardRef(({token}, ref) => {
         id: ''
     })
 
+    const timerRef = useRef(null)
+
     useEffect(() => {
         updateState()
-        return () => source.cancel()
+        const tipAccess = localStorage.getItem('tipAccess')
+        if (!tipAccess){
+            localStorage.setItem('tipAccess', 'true')
+            setConnectTip(true)
+        }
+        return () => {
+            source.cancel()
+            clearTimeout(timerRef.current)
+        }
+    // eslint-disable-next-line
     }, [])
 
+
     const updateState = () => {
+        if (timerRef.current){
+            clearTimeout(timerRef.current)
+        }
         const requestInfo = reqWithToken('https://api.spotify.com/v1/me/player', token, source)
         requestInfo()
             .then(response => {
-                // console.log(response.data)
-                const {repeat_state, shuffle_state, is_playing, progress_ms, item, device} = response.data
-                setPlayback(progress_ms/item.duration_ms)
-                setVolume(device.volume_percent/100)
-                setPlaybackState(state => ({...state, play: is_playing, shuffle: shuffle_state, repeat: repeat_state !== 'off', progress:progress_ms, total_time: item.duration_ms}))
-                setPlayInfo(item)
+                if (response.status === 200){
+                    const {repeat_state, shuffle_state, is_playing, progress_ms, item, device} = response.data
+                    setPlayback(progress_ms/item.duration_ms)
+                    timerRef.current = setTimeout(()=> updateState(), item.duration_ms - progress_ms + 10)
+                    setVolume(device.volume_percent/100)
+                    setPlaybackState(state => ({...state, play: is_playing, shuffle: shuffle_state, repeat: repeat_state !== 'off', progress:progress_ms, total_time: item.duration_ms}))
+                    setPlayInfo(item)
+                }else if (response.status === 204){
+                    setMessage('Please login to an official Spotify app and/or start playing to use the player')
+                    setConnectTip(true)
+                }else{
+                    setMessage(`ERROR: server response with ${response}. Player feature is unavailable!`)
+                }
             })
             .catch(error => console.log(error))
     }
@@ -75,7 +98,7 @@ const Player = React.forwardRef(({token}, ref) => {
                         setPlaybackState(state => ({...state, play: false}))
                         updateState()
                     }else{
-                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response}`)
                     }
                 }) 
                 .catch(error => setMessage(`ERROR: ${error}`))
@@ -87,7 +110,7 @@ const Player = React.forwardRef(({token}, ref) => {
                         setPlaybackState(state => ({...state, play: true}))
                         updateState()
                     }else{
-                        setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
+                        setMessage(`ERROR: Something went wrong! Server response: ${response}`)
                     }
                 }) 
                 .catch(error => setMessage(`ERROR: ${error}`))
@@ -190,6 +213,7 @@ const Player = React.forwardRef(({token}, ref) => {
                 if (response.status === 204){
                     setPlayback(ratio)
                     setPlaybackState(state => ({...state, progress_ms: time}))
+                    updateState()
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -220,7 +244,7 @@ const Player = React.forwardRef(({token}, ref) => {
 
     return (
         <>
-        {<Heartbeat heartbeatFunction={updateState} heartbeatInterval={playbackState.play ?2000:5000}/>}
+        {/* {playbackState.play ? null:<Heartbeat heartbeatFunction={updateState} heartbeatInterval={10000}/>} */}
         {playbackState.play ? <Heartbeat heartbeatFunction={updatePlayback} heartbeatInterval={500}/>:null}
         <div className='player'>
 
@@ -253,7 +277,7 @@ const Player = React.forwardRef(({token}, ref) => {
                 <div className="extra-controls">
                     <span className='connect-devices-wrapper'>
                         {connectTip && <ConnectDevices token={token} closeTip={() => setConnectTip(false)}/>}
-                        <ControlButton title='Devices' icon='Speaker' size='x-larger' onClick={() => setConnectTip(!connectTip)}/> 
+                        <ControlButton title='Devices' icon='Speaker' size='x-larger' onClick={() => setConnectTip(!connectTip)} active={playbackState.play}/> 
                     </span>
                     
                     <div className="volume-control">

@@ -1,21 +1,25 @@
 import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
 import {useLocation} from 'react-router-dom'
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
 
-import PageBanner from './PageBanner'
-import PlayListFunctions from './PlayListFunctions'
-import TrackList from './TrackList'
 
-import useId from '../utilities/hooks/useId'
-import useInfiScroll from '../utilities/hooks/useInfiScroll'
-import {TokenContext, MessageContext} from '../utilities/context'
-import putWithToken from '../utilities/putWithToken'
+import PageBanner from '../featured-components/PageBanner'
+import PlayListFunctions from '../featured-components/PlayListFunctions'
+import TrackList from '../featured-components/TrackList'
+import Loading from '../featured-components/Loading'
+
+import useId from '../../utilities/hooks/useId'
+import useInfiScroll from '../../utilities/hooks/useInfiScroll'
+import {TokenContext, MessageContext, PlayContext} from '../../utilities/context'
+import putWithToken from '../../utilities/putWithToken'
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
 
 export default function AlbumPage() {
     const id = useId()
     const token = useContext(TokenContext)
     const setMessage = useContext(MessageContext)
+    const updatePlayer = useContext(PlayContext)
+    const [loading, setLoading] = useState(true)
 
     const highlight = useHighlight()
 
@@ -34,7 +38,7 @@ export default function AlbumPage() {
     const [uri, setUri] = useState('')
     const [setNext, lastRef] = useInfiScroll(setTracks)
     const source = axios.CancelToken.source()
-    //using the id to get the playlist's info
+
     useEffect(() => {
         setTracks([])
         setNext(null)
@@ -49,19 +53,27 @@ export default function AlbumPage() {
             release_date: ''
         })
         setUri('')
+        setLoading(true)
         const [source, makeRequest] = makeAxiosRequest(`https://api.spotify.com/v1/albums/${id}`)
-
-        makeRequest()
+        if(id){
+            makeRequest()
             .then((data) => {
                 const {album_type, name, artists, primary_color, tracks, images, release_date, uri} = data
                 setbannerInfo(bannerInfo => ({...bannerInfo, album_type, name, user:artists, primary_color, images, release_date}))
                 setTracks(tracks.items)
                 setNext(tracks.next)
                 setUri(uri)
+                setLoading(false)
             })
-            .catch((error) => console.log(error))
+            .catch((error) => {
+                setLoading(false)
+                setMessage(`ERROR: ${error}`)
+            })
+        }
+        
         
         return () => source.cancel()
+    // eslint-disable-next-line
     }, [id])
 
     const playContext = () => {
@@ -72,7 +84,7 @@ export default function AlbumPage() {
         request()
             .then(response => {
                 if (response.status === 204){
-                    //TODO: setPlay
+                    setTimeout(() => updatePlayer(), 500)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -89,7 +101,7 @@ export default function AlbumPage() {
         request()
             .then(response => {
                 if (response.status === 204){
-                    //TODO: setPlay
+                    setTimeout(() => updatePlayer(), 500)
                 }else{
                     setMessage(`ERROR: Something went wrong! Server response: ${response.status}`)
                 }
@@ -98,6 +110,9 @@ export default function AlbumPage() {
     }
 
     return (
+        loading? 
+        <Loading />
+        :
         <div className='listPage' style={{display: `${tracks.length===0? 'none':'block'}`}}>
             <PageBanner pageTitle={bannerInfo.album_type} bannerInfo={bannerInfo}/>
             <div className="playListContent">

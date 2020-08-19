@@ -1,5 +1,5 @@
 import React from 'react'
-import PromptButton from './PromptButton'
+import PromptButton from '../featured-components/PromptButton'
 export default function CTAbanner() {
     return (
         <div className='CTA-banner'>

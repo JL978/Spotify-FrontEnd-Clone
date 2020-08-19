@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios'
+
 import ConnectDevicesItem from './ConnectDevicesItem'
-import reqWithToken from '../utilities/reqWithToken'
-import putWithToken from '../utilities/putWithToken'
+
+import reqWithToken from '../../utilities/reqWithToken'
+import putWithToken from '../../utilities/putWithToken'
 
 
 const ConnectDevices = ({token, closeTip}) => {
@@ -25,6 +27,7 @@ const ConnectDevices = ({token, closeTip}) => {
             window.removeEventListener('click', clickExit)
             source.cancel()
         }
+    // eslint-disable-next-line
     }, [])
 
     const clickExit = (e) => {

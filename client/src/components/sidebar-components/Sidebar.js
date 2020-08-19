@@ -1,9 +1,8 @@
 import React, {useContext} from 'react';
-
 import ReactToolTip from 'react-tooltip'
-import generateContent from '../utilities/TipContent'
 
-import {LoginContext} from '../utilities/context'
+import generateContent from '../../utilities/TipContent'
+import {LoginContext} from '../../utilities/context'
 
 //The main sticky left-hand side bar in the app
 function Sidebar({children}) {

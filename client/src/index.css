@@ -45,12 +45,22 @@ body{
 
 .App{
     height: 100vh;
+    width: 100vw;
     display: relative;
     display: grid;
     grid-template-rows: 1fr auto;
-    /* grid-template-rows: calc(100vh - var(--player-height)) auto; */
     grid-template-columns: auto 1fr;
     overflow: hidden;
+}
+
+.loading{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background: #040404;
 }
 
 .sidebar{

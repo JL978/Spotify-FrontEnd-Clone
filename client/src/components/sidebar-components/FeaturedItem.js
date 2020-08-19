@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Icon from '../icons'
 import {NavLink} from 'react-router-dom'
-
-//Could have been the same as a nav item but the styling is a little different so I'll leave it as a separate component
 
 const FeaturedItem = ({label, loggedIn}) => {
     return (

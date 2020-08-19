@@ -1,17 +1,17 @@
-import React from 'react'
-import {useState, useEffect, useContext} from 'react'
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
+import React, {useState, useEffect, useContext} from 'react'
 import axios from 'axios'
 
-import PageBanner from './PageBanner'
-import PlayListFunctions from './PlayListFunctions'
-import CollectionRow from './CollectionRow'
+import PageBanner from '../featured-components/PageBanner'
+import PlayListFunctions from '../featured-components/PlayListFunctions'
+import CollectionRow from '../featured-components/CollectionRow'
+import Loading from '../featured-components/Loading'
 
-import useId from '../utilities/hooks/useId'
-import useInfiScroll from '../utilities/hooks/useInfiScroll'
-import {UserContext, TokenContext, LoginContext, MessageContext} from '../utilities/context'
-import reqWithToken from '../utilities/reqWithToken'
-import putWithToken from '../utilities/putWithToken'
+import useId from '../../utilities/hooks/useId'
+import useInfiScroll from '../../utilities/hooks/useInfiScroll'
+import {UserContext, TokenContext, LoginContext, MessageContext} from '../../utilities/context'
+import reqWithToken from '../../utilities/reqWithToken'
+import putWithToken from '../../utilities/putWithToken'
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
 
 export default function UserPage({query, setMessage}) {
     const id = useId()
@@ -19,7 +19,7 @@ export default function UserPage({query, setMessage}) {
     const token = useContext(TokenContext)
     const loggedIn = useContext(LoginContext)
     const setStatusMessage = useContext(MessageContext)
-
+    const [loading, setLoading] = useState(true)
 
     const [bannerInfo, setbannerInfo] = useState({
         name: '',
@@ -47,6 +47,7 @@ export default function UserPage({query, setMessage}) {
         })
         setFollow(false)
         setplayLists([])
+        setLoading(true)
         
         const [userSource, requestUser] = makeAxiosRequest(`https://api.spotify.com/v1/users/${id}`)
         const [listSource, requestList] = makeAxiosRequest(`https://api.spotify.com/v1/users/${id}/playlists`)
@@ -60,14 +61,18 @@ export default function UserPage({query, setMessage}) {
                 setbannerInfo(bannerInfo => ({...bannerInfo, name:display_name, user:[owner], followers, primary_color, images, total}))
                 setplayLists(items)
                 setNext(next)
+                setLoading(false)
             }catch(error){ 
-                console.log(error)
+                setStatusMessage(`ERROR: ${error}`)
+                setLoading(false)
             }   
         }
 
-        makeRequest()
-
-        if (loggedIn){
+        if(id){
+            makeRequest()
+        }
+        
+        if (loggedIn && id){
             const requestFollow = reqWithToken(`https://api.spotify.com/v1/me/following/contains?type=user&ids=${id}`, token, source)
             requestFollow()
                 .then(response => {
@@ -91,9 +96,9 @@ export default function UserPage({query, setMessage}) {
                 .then(response => {
                     if (response.status === 204){
                         if (follow){
-                            setMessage(`Unsaved from your collection`)
+                            setStatusMessage(`Unsaved from your collection`)
                         }else{
-                            setMessage(`Saved to your collection`)
+                            setStatusMessage(`Saved to your collection`)
                         }
                         setFollow(!follow)
                     }else{
@@ -105,11 +110,14 @@ export default function UserPage({query, setMessage}) {
     }
 
     return (
+        loading? 
+        <Loading /> 
+        :
         <div className='listPage' style={{display: playLists.length===0? 'none':'block'}}>
             <PageBanner pageTitle='profile' bannerInfo={bannerInfo}/>
             <div className="playListContent">
                 <div className="playListOverlay" style={{backgroundColor: `${bannerInfo.primary_color}`}}></div>
-                <PlayListFunctions type={id === user.id? 'none':'user'} follow={follow} onFollow={followUser} setMessage={setMessage}/>
+                <PlayListFunctions type={id === user.id? 'none':'user'} follow={follow} onFollow={followUser} setMessage={setStatusMessage}/>
                 <div className="page-content" style={{marginTop: '40px'}}>
                     <CollectionRow ref={lastRef} name='Public Playlists' id={null} playlists={playLists}/>
                 </div>

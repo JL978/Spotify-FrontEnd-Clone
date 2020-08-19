@@ -1,16 +1,18 @@
 import React from 'react'
-import {useEffect, useState} from 'react'
-import makeAxiosRequest from '../utilities/makeAxiosRequest'
+import {useEffect, useState, useContext} from 'react'
+import makeAxiosRequest from '../../utilities/makeAxiosRequest'
 
-import PageTitle from './PageTitle'
-import PlayCard from './PlayCard'
+import PageTitle from '../featured-components/PageTitle'
+import PlayCard from '../featured-components/PlayCard'
 
-import useId from '../utilities/hooks/useId'
-import useInfiScroll from '../utilities/hooks/useInfiScroll'
+import useId from '../../utilities/hooks/useId'
+import useInfiScroll from '../../utilities/hooks/useInfiScroll'
+import {MessageContext} from '../../utilities/context'
 
 
 export default function GenrePage() {
     const id = useId()
+    const setMessage = useContext(MessageContext)
 
     const [playLists, setPlayLists] = useState([])
     const [name, setName] = useState('')
@@ -28,12 +30,14 @@ export default function GenrePage() {
                 setPlayLists(listData.playlists.items)
                 setNext(listData.playlists.next)
             }catch(error){
-                console.log(error)
+                setMessage(error)
             }
         }
 
-        makeRequest()
-
+        if(id){
+            makeRequest()
+        }
+        
         return () => {
             nameSource.cancel()
             listSource.cancel()
